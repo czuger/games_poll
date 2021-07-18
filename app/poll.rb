@@ -10,9 +10,10 @@ require 'active_record'
 require 'yaml'
 require_relative 'models/server'
 require_relative 'models/channel'
-require_relative 'models/polls_instance'
+require_relative 'models/poll_instance'
 require_relative 'commands/common'
 require_relative 'commands/games_commands'
+require_relative 'commands/poll_commands'
 
 file = File.read('./config/bot.json')
 data_hash = JSON.parse(file)
@@ -31,6 +32,7 @@ bot.ready do |event|
 end
 
 Commands::GamesCommands.init_bot bot
+Commands::PollCommands.init_bot bot
 
 Thread.new do
   bot.add_await!( Discordrb::Events::ReactionAddEvent) do |reaction_event|
@@ -89,7 +91,7 @@ bot.command :poll do |event|
   end
 
   p result
-  PollsInstance.get_or_create(result.id)
+  PollInstance.get_or_create(result.id)
 
   127462.upto(127462+3).each do |i|
     sleep(0.1)

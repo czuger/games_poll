@@ -13,14 +13,22 @@ class FirstMigration < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    create_table :polls_models do |t|
+    create_table :poll_models do |t|
       t.references :server, null: false
       t.string :name, index: { unique: true }, null: false
 
       t.timestamps
     end
 
-    create_table :polls_instances do |t|
+    create_table :poll_schedules do |t|
+      t.references :poll_model, null: false
+      t.integer :day, null: false
+
+      t.timestamps
+    end
+    add_index :poll_schedules, [:poll_model_id, :day], unique: true
+
+    create_table :poll_instances do |t|
       t.references :channel, null: false
       t.string :discord_id, index: { unique: true }, null: false
 

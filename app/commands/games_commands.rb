@@ -3,7 +3,7 @@ require_relative '../models/game'
 require_relative 'common'
 
 module Commands
-  class GamesCommands
+  class GamesCommands < Common
 
     COMMANDS = [
         [ 'gmadd', 'Add a new game' ],
@@ -84,9 +84,8 @@ module Commands
     end
 
     # Game help
-    def self.gmh(event)
-      message = COMMANDS.map{ |e| "#{Common::BOT_PREFIX}#{e[0]} - #{e[1]}"}.join("\n")
-      event.channel.send_temporary_message(message, 30)
+    def self.gmh(_)
+      self.help
     end
   end
 end
