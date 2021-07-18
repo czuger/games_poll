@@ -7,3 +7,12 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 # gem "rails"
 
 gem 'discordrb'
+
+gem 'standalone_migrations'
+
+gem 'rake'
+gem 'sqlite3'
+
+gem 'activerecord'
+
+gem 'rerun'

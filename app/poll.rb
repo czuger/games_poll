@@ -6,9 +6,17 @@ require 'discordrb'
 require 'json'
 require 'pp'
 require 'uri'
+require 'active_record'
+require 'yaml'
+require_relative 'models/server'
+require_relative 'models/channel'
 
 file = File.read('./config/bot.json')
 data_hash = JSON.parse(file)
+
+db_config = YAML.load_file( 'db/config.yml' )
+ActiveRecord::Base.establish_connection(db_config['development'])
+ActiveRecord::Base.logger = Logger.new STDOUT
 
 # Here we instantiate a `CommandBot` instead of a regular `Bot`, which has the functionality to add commands using the
 # `command` method. We have to set a `prefix` here, which will be the character that triggers command execution.
@@ -57,6 +65,9 @@ bot.command :poll do |event|
   p event.channel
   p event.server
 
+  Server.get_or_create(event.server.id)
+  Channel.get_or_create(event.channel.id)
+
   result = event.channel.send_embed do |embed|
     # p embed
 
@@ -69,6 +80,8 @@ bot.command :poll do |event|
 
     embed.add_field(name: 'Server Name', value: 'foo', inline: true)
   end
+
+  p result
 
   127462.upto(127462+3).each do |i|
     sleep(0.1)
