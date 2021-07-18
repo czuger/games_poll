@@ -7,12 +7,21 @@ class FirstMigration < ActiveRecord::Migration[6.0]
     end
 
     create_table :channels do |t|
+      t.references :server, null: false
       t.string :discord_id, index: { unique: true }, null: false
 
       t.timestamps
     end
 
-    create_table :poll_instances do |t|
+    create_table :polls_models do |t|
+      t.references :server, null: false
+      t.string :name, index: { unique: true }, null: false
+
+      t.timestamps
+    end
+
+    create_table :polls_instances do |t|
+      t.references :channel, null: false
       t.string :discord_id, index: { unique: true }, null: false
 
       t.timestamps
@@ -26,6 +35,7 @@ class FirstMigration < ActiveRecord::Migration[6.0]
     end
 
     create_table :games do |t|
+      t.references :server, null: false
       t.string :name, null: false
       t.boolean :favored, null: false, default: false
 
@@ -33,9 +43,9 @@ class FirstMigration < ActiveRecord::Migration[6.0]
     end
 
     create_table :votes do |t|
-      t.references :poll_instances
-      t.references :voters
-      t.references :games
+      t.references :poll_instances, null: false
+      t.references :voters, null: false
+      t.references :games, null: false
 
       t.timestamps
     end

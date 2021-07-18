@@ -10,6 +10,8 @@ require 'active_record'
 require 'yaml'
 require_relative 'models/server'
 require_relative 'models/channel'
+require_relative 'models/polls_instance'
+require_relative 'commands/games_commands'
 
 file = File.read('./config/bot.json')
 data_hash = JSON.parse(file)
@@ -27,6 +29,18 @@ bot.ready do |event|
   # pp event
 end
 
+bot.command :game_add do |event|
+  GamesCommands.game_add(event)
+end
+
+bot.command :game_list do |event|
+  GamesCommands.game_list(event)
+end
+
+bot.command :game_favored do |event|
+  GamesCommands.game_favored(event)
+end
+
 Thread.new do
   bot.add_await!( Discordrb::Events::ReactionAddEvent) do |reaction_event|
     # Since this code will run on every CROSS_MARK reaction, it might not
@@ -37,7 +51,9 @@ Thread.new do
     # Delete the matching message.
     # message.delete
 
+    p reaction_event
     p reaction_event.message.id
+    pp reaction_event
     false
   end
 end
@@ -82,6 +98,7 @@ bot.command :poll do |event|
   end
 
   p result
+  PollsInstance.get_or_create(result.id)
 
   127462.upto(127462+3).each do |i|
     sleep(0.1)

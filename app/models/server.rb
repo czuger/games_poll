@@ -1,3 +1,5 @@
+# require_relative 'game'
+
 require_relative 'common'
 
 class Server < ActiveRecord::Base
