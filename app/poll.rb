@@ -11,6 +11,7 @@ require 'yaml'
 require_relative 'models/server'
 require_relative 'models/channel'
 require_relative 'models/polls_instance'
+require_relative 'commands/common'
 require_relative 'commands/games_commands'
 
 file = File.read('./config/bot.json')
@@ -22,24 +23,14 @@ ActiveRecord::Base.logger = Logger.new STDOUT
 
 # Here we instantiate a `CommandBot` instead of a regular `Bot`, which has the functionality to add commands using the
 # `command` method. We have to set a `prefix` here, which will be the character that triggers command execution.
-bot = Discordrb::Commands::CommandBot.new token: data_hash['token'], prefix: '!', advanced_functionality: true
+bot = Discordrb::Commands::CommandBot.new token: data_hash['token'], prefix: Commands::Common::BOT_PREFIX, advanced_functionality: true
 
 # pp bot
 bot.ready do |event|
   # pp event
 end
 
-bot.command :game_add do |event|
-  GamesCommands.game_add(event)
-end
-
-bot.command :game_list do |event|
-  GamesCommands.game_list(event)
-end
-
-bot.command :game_favored do |event|
-  GamesCommands.game_favored(event)
-end
+Commands::GamesCommands.init_bot bot
 
 Thread.new do
   bot.add_await!( Discordrb::Events::ReactionAddEvent) do |reaction_event|
