@@ -9,6 +9,7 @@ module Commands
     COMMANDS = [
         [ 'pa', 'Create a new poll model' ],
         [ 'ps', 'Schedule a poll model' ],
+        [ 'pf', 'Force create instance and show' ],
         [ 'pl', 'List poll models' ],
         [ 'ph', 'Show this message' ]
     ]
@@ -59,6 +60,32 @@ module Commands
         ps.day = day
         ps.save!
       end
+    end
+
+    # Force create instance and show
+    def self.pf(event)
+        params = event.message.content.split
+        params.shift
+        poll_id = params.shift
+
+        discord_message_id = event.message.id
+        discord_channel_id = event.channel.id
+        discord_server_id = event.channel.server.id
+
+        server = Server.get_or_create(discord_server_id)
+        channel = Channel.get_or_create(discord_channel_id, server.id)
+        # poll_model = server.poll_models.find(poll_id)
+
+        ActiveRecord::Base.transaction do
+          pi = PollInstance.where(discord_id: discord_message_id).first_or_initialize
+          pi.channel_id = channel.id
+          pi.save!
+
+          server.games.each do |g|
+            pi.games << g
+          end
+        end
+      # end
     end
 
     # Poll list

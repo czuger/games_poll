@@ -6,12 +6,12 @@ module Commands
   class GamesCommands < Common
 
     COMMANDS = [
-        [ 'gmadd', 'Add a new game' ],
-        [ 'gmup', 'Update a game name' ],
-        [ 'gmdel', 'Delete a game' ],
-        [ 'gmfav', 'Set a game favorite status' ],
-        [ 'gmls', 'List all games' ],
-        [ 'gmh', 'Show this message' ]
+        [ 'ga', 'Add a new game' ],
+        [ 'gu', 'Update a game name' ],
+        [ 'gd', 'Delete a game' ],
+        [ 'gf', 'Set a game favorite status' ],
+        [ 'gl', 'List all games' ],
+        [ 'gh', 'Show this message' ]
     ]
 
     def self.init_bot(bot)
@@ -38,7 +38,7 @@ module Commands
     end
 
     # Game add
-    def self.gmadd(event)
+    def self.ga(event)
       s = Server.get_or_create event.server.id
       content = event.message.content.split
 
@@ -51,7 +51,7 @@ module Commands
     end
 
     # Game update
-    def self.gmup(event)
+    def self.gu(event)
       self.find_and_exec(event) do |g, content|
         name = content.join(' ')
         g.name = name
@@ -60,14 +60,14 @@ module Commands
     end
 
     # Game del
-    def self.gmdel(event)
+    def self.gd(event)
       self.find_and_exec(event) do |g, _|
         g.destroy!
       end
     end
 
     # Set game favored status
-    def self.gmfav(event)
+    def self.gf(event)
       self.find_and_exec(event) do |g, _|
         g.favored = !g.favored
         g.save!
@@ -75,7 +75,7 @@ module Commands
     end
 
     # Game list
-    def self.gmls(event)
+    def self.gl(event)
       s = Server.get_or_create event.server.id
 
       game_list_message = s.games.order(:name).map{ |e| "#{e.id} - #{e.name} #{('+' if e.favored)}\n" }.join
@@ -84,7 +84,7 @@ module Commands
     end
 
     # Game help
-    def self.gmh(_)
+    def self.gh(_)
       self.help
     end
   end
