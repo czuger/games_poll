@@ -38,6 +38,34 @@ module Commands
       end
     end
 
+    def self.show_poll(poll, event)
+      result = event.channel.send_embed do |embed|
+        # p embed
+
+        embed.title = 'A quoi voulez vous jouer samedi.'
+        # embed.image = Discordrb::Webhooks::EmbedImage.new(url: 'https://www.ruby-lang.org/images/header-ruby-logo.png')
+        # embed.description = "
+      # :black_small_square: **a**: foo\n
+      # :black_small_square: **b**: bar\n
+      #   "
+
+        poll.games.order(:name).each do |g|
+          embed.add_field(name: g.name, value: 'foo', inline: true)
+        end
+      end
+
+      poll.games.order(:name).each_with_index do |g, i|
+
+        emojii_code = 127462 + i
+        emoji = [emojii_code].pack('U*')
+
+        sleep(0.1)
+
+        result.create_reaction emoji
+      end
+    end
+
+
     # Poll add
     def self.pa(event)
       s = Server.get_or_create event.server.id
@@ -62,11 +90,11 @@ module Commands
       end
     end
 
-    # Force create instance and show
+    # Force create instance and showservers
     def self.pf(event)
         params = event.message.content.split
         params.shift
-        poll_id = params.shift
+        # poll_id = params.shift
 
         discord_message_id = event.message.id
         discord_channel_id = event.channel.id
@@ -84,8 +112,11 @@ module Commands
           server.games.each do |g|
             pi.games << g
           end
+
+          self.show_poll pi, event
         end
       # end
+      nil
     end
 
     # Poll list
