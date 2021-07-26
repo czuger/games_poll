@@ -4,7 +4,8 @@ class PollInstance < ActiveRecord::Base
   has_many :votes
   has_many :voters, through: :votes
 
-  has_and_belongs_to_many :games
+  has_many :poll_instances_games
+  has_many :games, -> { order 'poll_instances_games.emoji' }, through: :poll_instances_games
 
   extend Models::Common
 

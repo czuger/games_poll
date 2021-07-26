@@ -1,7 +1,7 @@
 require_relative '../models/server'
 require_relative '../models/channel'
 require_relative '../models/poll_model'
-
+require_relative '../models/poll_instances_game'
 require_relative 'common'
 
 module Commands
@@ -81,8 +81,10 @@ module Commands
           pi.channel_id = channel.id
           pi.save!
 
-          server.games.each do |g|
-            pi.games << g
+          server.games.order(:name).each_with_index do |g, i|
+            pig = PollInstancesGame.where(poll_instance_id: pi.id, game_id: g.id).first_or_initialize
+            pig.emoji = i + 1
+            pig.save!
           end
 
           pi.show event

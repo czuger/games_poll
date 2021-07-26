@@ -11,6 +11,7 @@ module Commands
         [ 'gd', 'Delete a game' ],
         [ 'gf', 'Set a game favorite status' ],
         [ 'gl', 'List all games' ],
+        [ 'gi', 'Set default games for server' ],
         [ 'gh', 'Show this message' ]
     ]
 
@@ -83,9 +84,19 @@ module Commands
       event.channel.send_temporary_message(game_list_message, 30)
     end
 
+    def self.gi(event)
+      s = Server.get_or_create event.server.id
+
+      ActiveRecord::Base.transaction do
+        %w(SAGA ADG Guildball Briskar Bolt Frostgrave Malifaux POW Armada).each do |game|
+          s.games.create!(name: game)
+        end
+      end
+    end
+
     # Game help
     def self.gh(_)
-      self.help
+      self.help(event, COMMANDS)
     end
   end
 end

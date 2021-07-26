@@ -36,10 +36,10 @@ class FirstMigration < ActiveRecord::Migration[6.0]
     end
 
     create_table :poll_instances_games do |t|
-      t.references :poll_instances, null: false, index: false
-      t.references :games, null: false, index: false
+      t.references :poll_instance, null: false, index: false
+      t.references :game, null: false, index: false
 
-      t.string :integer, null: false
+      t.integer :emoji, null: false
 
       t.timestamps
     end
