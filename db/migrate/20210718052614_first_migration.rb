@@ -62,9 +62,9 @@ class FirstMigration < ActiveRecord::Migration[6.0]
     end
 
     create_table :votes do |t|
-      t.references :poll_instances, null: false
-      t.references :voters, null: false
-      t.references :games, null: false
+      t.references :poll_instance, null: false
+      t.references :voter, null: false
+      t.references :game, null: false
 
       t.timestamps
     end
