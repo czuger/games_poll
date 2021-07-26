@@ -86,6 +86,9 @@ module Commands
           end
 
           pi.show event
+          # The id of the message is changed during show. Indeed, we need the id of the message
+          # we created, not the id of the command that required poll creation.
+          pi.save!
         end
       # end
       nil

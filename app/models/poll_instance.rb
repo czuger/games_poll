@@ -34,6 +34,8 @@ class PollInstance < ActiveRecord::Base
       sleep(0.1)
       result.create_reaction(PollInstance.num_to_emoji(i))
     end
+
+    self.discord_id = result.id
   end
 
 end
