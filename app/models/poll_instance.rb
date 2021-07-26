@@ -17,16 +17,17 @@ class PollInstance < ActiveRecord::Base
 
   def show(event)
     result = event.channel.send_embed do |embed|
-      embed.title = 'A quoi voulez vous jouer samedi.'
+      # embed.title = 'A quoi voulez vous jouer samedi.'
+      title = 'A quoi voullez vous jouer samedi ?'
 
-      1.upto(5).each do
-        games.order(:name).each_with_index do |g, i|
-          msg = "#{PollInstance.num_to_emoji(i)} : #{g.name}"
-          p msg
-          # e.add_field(name: "\u200b", value: msg, inline: true)
-          embed.add_field(name: "\u200b", value: msg, inline: false)
-        end
+      games_list = []
+
+      games.order(:name).each_with_index do |g, i|
+        msg = "#{PollInstance.num_to_emoji(i)} : #{g.name}"
+        games_list << msg
       end
+
+      embed.add_field(name: title, value: games_list.join("\n"), inline: false)
     end
 
     games.order(:name).each_with_index do |g, i|
