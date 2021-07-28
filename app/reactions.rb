@@ -29,33 +29,38 @@ class Reactions
       voter.save!
 
       pi = PollInstance.where(discord_id: reaction_event.message.id).take
-      p pi
+      # p pi
       if pi
-        yield pi, voter
+        emoji_number = reaction_event.emoji.name.ord - PollInstance::BASE_EMOJII
+        # p emoji_number
+
+        game_id = PollInstancesGame.where(poll_instance_id: pi.id, emoji: emoji_number).pluck(:game_id)
+        # p game_id
+
+        if game_id
+          yield pi, voter, game_id
+        else
+          p "PollInstancesGame #{pi.id} not found !"
+        end
       else
-        p 'PollInstance not found !'
+        p "PollInstance #{reaction_event.message.id} not found !"
       end
     end
   end
 
   def self.up_vote(reaction_event)
-    process_message(reaction_event) do |pi, voter|
-      emoji_number = reaction_event.emoji.name.ord - PollInstance::BASE_EMOJII
-      p emoji_number
-
-      game_id = PollInstancesGame.where(poll_instance_id: pi.id, emoji: emoji_number).pluck(:game_id)
-      p game_id
+    process_message(reaction_event) do |pi, voter, game_id|
 
       vote = Vote.where(poll_instance_id: pi.id, voter_id: voter.id).first_or_initialize
-      p vote
+      # p vote
       vote.game_id = game_id.first
       vote.save!
     end
   end
 
   def self.down_vote(reaction_event)
-    process_message(reaction_event) do |msg|
-
+    process_message(reaction_event) do |pi, voter, game_id|
+      Vote.where(poll_instance_id: pi.id, voter_id: voter.id, game_id: game_id).delete_all
     end
   end
 
