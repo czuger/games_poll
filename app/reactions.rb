@@ -51,9 +51,7 @@ class Reactions
   def self.up_vote(reaction_event)
     process_message(reaction_event) do |pi, voter, game_id|
 
-      vote = Vote.where(poll_instance_id: pi.id, voter_id: voter.id).first_or_initialize
-      # p vote
-      vote.game_id = game_id.first
+      vote = Vote.where(poll_instance_id: pi.id, voter_id: voter.id, game_id: game_id.first).first_or_initialize
       vote.save!
     end
   end

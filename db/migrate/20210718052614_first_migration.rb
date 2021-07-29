@@ -62,12 +62,14 @@ class FirstMigration < ActiveRecord::Migration[6.0]
     end
 
     create_table :votes do |t|
-      t.references :poll_instance, null: false
-      t.references :voter, null: false
-      t.references :game, null: false
+      t.references :poll_instance, null: false, index: false
+      t.references :voter, null: false, index: false
+      t.references :game, null: false, index: false
 
       t.timestamps
     end
+    add_index :votes, [:game_id, :voter_id, :poll_instance_id], unique: true
+
 
 
     # create_join_table :poll_instances, :games
