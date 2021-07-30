@@ -31,8 +31,8 @@ class Reactions
       pi = PollInstance.where(discord_id: reaction_event.message.id).take
       # p pi
       if pi
-        emoji_number = reaction_event.emoji.name.ord - PollInstance::BASE_EMOJII
-        # p emoji_number
+        emoji_number = reaction_event.emoji.name.ord - PollInstance::BASE_EMOJII + 1
+        puts "Emoji reaction : #{emoji_number}"
 
         game_id = PollInstancesGame.where(poll_instance_id: pi.id, emoji: emoji_number).pluck(:game_id)
         # p game_id
