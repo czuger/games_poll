@@ -39,6 +39,8 @@ class Reactions
 
         if game_id
           yield pi, voter, game_id
+
+          self.update_voters(reaction_event, pi)
         else
           p "PollInstancesGame #{pi.id} not found !"
         end
@@ -46,6 +48,12 @@ class Reactions
         p "PollInstance #{reaction_event.message.id} not found !"
       end
     end
+  end
+
+  def self.update_voters(reaction_event, pi)
+    new_embed = Discordrb::Webhooks::Embed.new
+    new_embed = PollInstance.generate_emmbed(new_embed, pi)
+    reaction_event.message.edit(nil, new_embed=new_embed)
   end
 
   def self.up_vote(reaction_event)

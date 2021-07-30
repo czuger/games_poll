@@ -16,19 +16,35 @@ class PollInstance < ActiveRecord::Base
     [emojii_code].pack('U*')
   end
 
-  def show(event)
-    result = event.channel.send_embed do |embed|
-      # embed.title = 'A quoi voulez vous jouer samedi.'
-      title = 'A quoi voullez vous jouer samedi ?'
+  def self.generate_emmbed(embed, poll_instance)
+    # embed.title = 'A quoi voulez vous jouer samedi.'
+    title = 'A quoi voullez vous jouer samedi ?'
 
-      games_list = []
+    games_list = []
 
-      games.order(:name).each_with_index do |g, i|
-        msg = "#{PollInstance.num_to_emoji(i)} : #{g.name}"
-        games_list << msg
+    voters = {}
+    poll_instance.votes.includes(:voter).where(poll_instance_id: poll_instance.id).order('voters.name').each do |votes|
+      voters[votes.game_id] = []
+      voters[votes.game_id] << votes.voter.name
+    end
+
+    poll_instance.games.order(:name).each_with_index do |g, i|
+      msg = "#{PollInstance.num_to_emoji(i)} : #{g.name}"
+
+      if voters[g.id] && !voters[g.id].empty?
+        msg += ' - ' + voters[g.id].join(' - ')
       end
 
-      embed.add_field(name: title, value: games_list.join("\n"), inline: false)
+      games_list << msg
+    end
+
+    embed.add_field(name: title, value: games_list.join("\n"), inline: false)
+    embed
+  end
+
+  def show(event)
+    result = event.channel.send_embed do |embed|
+      embed = PollInstance.generate_emmbed(embed, self)
     end
 
     games.order(:name).each_with_index do |g, i|
