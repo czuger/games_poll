@@ -1,7 +1,8 @@
 require_relative '../models/server'
 require_relative '../models/channel'
 require_relative '../models/poll_model'
-require_relative '../models/poll_instances_game'
+require_relative '../models/poll_instances_choice'
+require_relative 'poll_commands_extensions'
 require_relative 'common'
 
 module Commands
@@ -13,6 +14,8 @@ module Commands
         [ 'pl', 'List poll models' ],
         [ 'ph', 'Show this message' ]
     ]
+
+    extend PollCommandsExtensions
 
     def self.init_bot(bot)
       COMMANDS.map{|e| e[0]}.each do |command|
@@ -60,40 +63,6 @@ module Commands
         ps.day = day
         ps.save!
       end
-    end
-
-    # Force create instance and showservers
-    def self.pf(event)
-        params = event.message.content.split
-        params.shift
-        # poll_id = params.shift
-
-        discord_message_id = event.message.id
-        discord_channel_id = event.channel.id
-        discord_server_id = event.channel.server.id
-
-        server = Server.get_or_create(discord_server_id)
-        channel = Channel.get_or_create(discord_channel_id, server.id)
-        # poll_model = server.poll_models.find(poll_id)
-
-        ActiveRecord::Base.transaction do
-          pi = PollInstance.where(discord_id: discord_message_id).first_or_initialize
-          pi.channel_id = channel.id
-          pi.save!
-
-          server.games.order(:name).each_with_index do |g, i|
-            pig = PollInstancesGame.where(poll_instance_id: pi.id, game_id: g.id).first_or_initialize
-            pig.emoji = i + 1
-            pig.save!
-          end
-
-          pi.show event
-          # The id of the message is changed during show. Indeed, we need the id of the message
-          # we created, not the id of the command that required poll creation.
-          pi.save!
-        end
-      # end
-      nil
     end
 
     # Poll list

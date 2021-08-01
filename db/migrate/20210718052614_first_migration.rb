@@ -35,16 +35,18 @@ class FirstMigration < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    create_table :poll_instances_games do |t|
+    create_table :poll_instances_choices do |t|
       t.references :poll_instance, null: false, index: false
-      t.references :game, null: false, index: false
+      t.bigint :choice_id, null: false, index: false
+      t.string :choice_type, null: false, index: false
 
       t.integer :emoji, null: false
 
       t.timestamps
     end
 
-    add_index :poll_instances_games, [:poll_instance_id, :game_id], unique: true
+    add_index :poll_instances_choices, [:poll_instance_id, :choice_id, :choice_type], unique: true,
+              name: :poll_instances_choices_unique_index
 
     create_table :voters do |t|
       t.string :discord_id, index: { unique: true }, null: false
@@ -61,14 +63,25 @@ class FirstMigration < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    create_table :votes do |t|
-      t.references :poll_instance, null: false, index: false
-      t.references :voter, null: false, index: false
-      t.references :game, null: false, index: false
+    create_table :orga_choices do |t|
+      t.references :server, null: false
+      t.string :name, null: false
+      t.boolean :before, null: false, default: true
+      t.boolean :other_game_action, null: false, default: false
 
       t.timestamps
     end
-    add_index :votes, [:game_id, :voter_id, :poll_instance_id], unique: true
+
+    create_table :votes do |t|
+      t.references :poll_instance, null: false, index: false
+      t.references :voter, null: false, index: false
+      t.bigint :choice_id, null: false, index: false
+      t.string :choice_type, null: false, index: false
+
+      t.timestamps
+    end
+    add_index :votes, [:poll_instance_id, :choice_id, :choice_type, :voter_id], unique: true,
+              name: :votes_unique_index
 
 
 

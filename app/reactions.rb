@@ -1,5 +1,5 @@
 require_relative 'models/poll_instance'
-require_relative 'models/poll_instances_game'
+require_relative 'models/poll_instances_choice'
 require_relative 'models/voter'
 require_relative 'models/vote'
 
@@ -52,7 +52,7 @@ class Reactions
 
   def self.update_voters(reaction_event, pi)
     new_embed = Discordrb::Webhooks::Embed.new
-    new_embed = PollInstance.generate_emmbed(new_embed, pi)
+    new_embed = PollInstance.generate_embed(new_embed, pi)
     reaction_event.message.edit(nil, new_embed=new_embed)
   end
 

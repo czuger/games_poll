@@ -91,6 +91,10 @@ module Commands
         %w(SAGA ADG Guildball Briskar Bolt Frostgrave Malifaux POW Armada).each do |game|
           s.games.create!(name: game)
         end
+
+        s.orga_choices.create!(name: 'Present avec les clefs')
+        s.orga_choices.create!(name: 'Autres', before: false, other_game_action: true)
+        s.orga_choices.create!(name: 'Absent', before: false)
       end
     end
 
