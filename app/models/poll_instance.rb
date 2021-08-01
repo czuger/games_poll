@@ -38,7 +38,7 @@ class PollInstance < ActiveRecord::Base
     #   games_list << msg
     # end
 
-    poll_instance.poll_instances_choices.order(:emoji).each do |pic|
+    poll_instance.poll_instances_choices.includes(:choice).order(:emoji).each do |pic|
         msg = "#{PollInstance.num_to_emoji(pic.emoji)} : #{pic.choice.name}"
 
         if voters[pic.id] && !voters[pic.id].empty?

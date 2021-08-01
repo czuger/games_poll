@@ -1,6 +1,7 @@
 .idea
 bot.json
 *.sqlite3
+*.sqlite3-journal
 schema.rb
 
 *.gem
