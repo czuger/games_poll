@@ -31,14 +31,14 @@ class Reactions
       pi = PollInstance.where(discord_id: reaction_event.message.id).take
       # p pi
       if pi
-        emoji_number = reaction_event.emoji.name.ord - PollInstance::BASE_EMOJII + 1
+        emoji_number = Vote.emoji_to_num(reaction_event.emoji.name)
         puts "Emoji reaction : #{emoji_number}"
 
-        game_id = PollInstancesGame.where(poll_instance_id: pi.id, emoji: emoji_number).pluck(:game_id)
+        poll_choice = PollInstancesChoice.where(poll_instance_id: pi.id, emoji: emoji_number).take
         # p game_id
 
-        if game_id
-          yield pi, voter, game_id
+        if poll_choice
+          yield pi, voter, poll_choice
 
           self.update_voters(reaction_event, pi)
         else
@@ -57,16 +57,18 @@ class Reactions
   end
 
   def self.up_vote(reaction_event)
-    process_message(reaction_event) do |pi, voter, game_id|
+    process_message(reaction_event) do |pi, voter, poll_choice|
 
-      vote = Vote.where(poll_instance_id: pi.id, voter_id: voter.id, game_id: game_id.first).first_or_initialize
+      vote = Vote.where(poll_instance_id: pi.id, voter_id: voter.id,
+                        choice_id: poll_choice.choice_id, choice_type: poll_choice.choice_type).first_or_initialize
       vote.save!
     end
   end
 
   def self.down_vote(reaction_event)
-    process_message(reaction_event) do |pi, voter, game_id|
-      Vote.where(poll_instance_id: pi.id, voter_id: voter.id, game_id: game_id).delete_all
+    process_message(reaction_event) do |pi, voter, poll_choice|
+      Vote.where(poll_instance_id: pi.id, voter_id: voter.id,
+                 choice_id: poll_choice.choice_id, choice_type: poll_choice.choice_type).delete_all
     end
   end
 

@@ -1,3 +1,5 @@
+
+
 require_relative 'common'
 
 class PollInstance < ActiveRecord::Base
@@ -9,11 +11,8 @@ class PollInstance < ActiveRecord::Base
 
   extend Models::Common
 
-  BASE_EMOJII = 127462
-
-  def self.num_to_emoji(i)
-    emojii_code = BASE_EMOJII + i
-    [emojii_code].pack('U*')
+  def self.choice_to_key(choice)
+    choice.choice_type + choice.choice_id.to_s
   end
 
   def self.generate_embed(embed, poll_instance)
@@ -24,25 +23,27 @@ class PollInstance < ActiveRecord::Base
 
     voters = {}
     poll_instance.votes.includes(:voter).order('voters.name').each do |votes|
-      voters[votes.game_id] = []
-      voters[votes.game_id] << votes.voter.name
+      voters[self.choice_to_key(votes)] = []
+      voters[self.choice_to_key(votes)] << votes.voter.name
     end
 
-    # poll_instance.choices.order(:name).each_with_index do |g, i|
-    #   msg = "#{PollInstance.num_to_emoji(i)} : #{g.name}"
+    # poll_instance.poll_instances_choices.order(:emoji).each do |pic|
+    #   msg = "#{PollInstance.num_to_emoji(pic.emoji)} : #{pic.choice.name}"
     #
-    #   if voters[g.id] && !voters[g.id].empty?
-    #     msg += ' - ' + voters[g.id].join(' - ')
+    #   voters = Vote.where(poll_instance_id: pic.id, choice_id: pic.choice_id, choice_type: pic.choice_type).
+    #     includes(:voter).map{ |e| e.voters.name }
+    #   unless voters.empty?
+    #     msg += ' - ' + voters.join(' - ')
     #   end
     #
     #   games_list << msg
     # end
 
     poll_instance.poll_instances_choices.includes(:choice).order(:emoji).each do |pic|
-        msg = "#{PollInstance.num_to_emoji(pic.emoji)} : #{pic.choice.name}"
+        msg = "#{Vote.num_to_emoji(pic.emoji)} : #{pic.choice.name}"
 
-        if voters[pic.id] && !voters[pic.id].empty?
-          msg += ' - ' + voters[pic.id].join(' - ')
+        if voters[self.choice_to_key(pic)] && !voters[self.choice_to_key(pic)].empty?
+          msg += ' - ' + voters[self.choice_to_key(pic)].join(' - ')
         end
 
         games_list << msg
@@ -59,7 +60,7 @@ class PollInstance < ActiveRecord::Base
 
     poll_instances_choices.order(:emoji).each do |pic|
         sleep(0.1)
-        result.create_reaction(PollInstance.num_to_emoji(pic.emoji))
+        result.create_reaction(Vote.num_to_emoji(pic.emoji))
     end
 
     # games.order(:name).each_with_index do |g, i|
