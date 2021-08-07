@@ -62,6 +62,10 @@ class Reactions
       vote = Vote.where(poll_instance_id: pi.id, voter_id: voter.id,
                         choice_id: poll_choice.choice_id, choice_type: poll_choice.choice_type).first_or_initialize
       vote.save!
+
+      if poll_choice.is_others_games_button?
+        pp poll_choice
+      end
     end
   end
 

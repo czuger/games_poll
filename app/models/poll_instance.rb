@@ -1,5 +1,3 @@
-
-
 require_relative 'common'
 
 class PollInstance < ActiveRecord::Base
