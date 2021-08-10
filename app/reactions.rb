@@ -2,6 +2,7 @@ require_relative 'models/poll_instance'
 require_relative 'models/poll_models_choice'
 require_relative 'models/voter'
 require_relative 'models/vote'
+require_relative 'models/add_other_game'
 
 class Reactions
 
@@ -20,6 +21,8 @@ class Reactions
     end
     Thread.new do
       bot.add_await!( Discordrb::Events::MessageEvent) do |reaction_event|
+        f = AddOtherGame.where(discord_id: reaction_event.channel.id)
+        p f
         pp reaction_event.message
         false
       end
