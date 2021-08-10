@@ -38,7 +38,7 @@ class Reactions
         # p game_id
 
         if poll_choice
-          yield pi, voter, poll_choice
+          yield pi, voter, poll_choice, reaction_event.user
 
           self.update_voters(reaction_event, pi)
         else
@@ -57,20 +57,25 @@ class Reactions
   end
 
   def self.up_vote(reaction_event)
-    process_message(reaction_event) do |pi, voter, poll_choice|
+    process_message(reaction_event) do |pi, voter, poll_choice, sender|
 
       vote = Vote.where(poll_instance_id: pi.id, voter_id: voter.id,
                         choice_id: poll_choice.choice_id, choice_type: poll_choice.choice_type).first_or_initialize
       vote.save!
 
       if poll_choice.is_others_games_button?
-        pp poll_choice
+        # pp poll_choice
+        channel = sender.pm
+        result = channel.send_embed do |embed|
+          embed = PollInstance.generate_embed(embed, pi)
+        end
+
       end
     end
   end
 
   def self.down_vote(reaction_event)
-    process_message(reaction_event) do |pi, voter, poll_choice|
+    process_message(reaction_event) do |pi, voter, poll_choice, sender|
       Vote.where(poll_instance_id: pi.id, voter_id: voter.id,
                  choice_id: poll_choice.choice_id, choice_type: poll_choice.choice_type).delete_all
     end

@@ -84,18 +84,31 @@ module Commands
       event.channel.send_temporary_message(game_list_message, 30)
     end
 
+    def self.gi_insert(server, title, favored)
+      game = server.games.where(name: title).first_or_initialize
+      game.favored = favored
+      game.save!
+    end
+
     def self.gi(event)
       s = Server.get_or_create event.server.id
 
       ActiveRecord::Base.transaction do
-        %w(SAGA ADG Guildball Briskar Bolt Frostgrave Malifaux POW Armada).each do |game|
-          s.games.create!(name: game)
+        File.open('data/favored.txt').readlines.each do |title|
+          self.gi_insert(s, title, true)
+        end
+        File.open('data/regular.txt').readlines.each do |title|
+          self.gi_insert(s, title, true)
         end
 
-        s.orga_choices.create!(name: 'Present avec les clefs')
-        s.orga_choices.create!(name: 'Autres', before: false, other_game_action: true)
-        s.orga_choices.create!(name: 'Absent', before: false)
+        [['Present avec les clefs', true, false], ['Autres', false, true], ['Absent', false, false]].each do |e|
+          g = s.orga_choices.where(name: e[0]).first_or_initialize
+          g.before = e[1]
+          g.other_game_action = e[2]
+          g.save!
+        end
       end
+      'Done'
     end
 
     # Game help
