@@ -21,9 +21,15 @@ class Reactions
     end
     Thread.new do
       bot.add_await!( Discordrb::Events::MessageEvent) do |reaction_event|
-        f = AddOtherGame.where(discord_id: reaction_event.channel.id)
+        f = AddOtherGame.where(discord_id: reaction_event.channel.id).first
         p f
-        pp reaction_event.message
+        pp reaction_event.message.text
+
+        game = Game.find(f.choices[reaction_event.message.text.to_i])
+        p game
+
+        f.poll_instance.poll_model.add_games([game])
+
         false
       end
     end

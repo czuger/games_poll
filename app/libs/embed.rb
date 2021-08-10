@@ -42,13 +42,15 @@ class Embed
     pm = poll_instance.poll_model
     selected_games_ids = pm.poll_models_choices.pluck(:choice_id)
     pm.server.games.order(:name).where.not(id: selected_games_ids).each_with_index do |unselected_game, i|
-      games_codes[i+1] = unselected_game.name
+      games_codes[i+1] = unselected_game.id
 
       msg = "#{i+1} - #{unselected_game.name}"
       games_list << msg
     end
 
-    aog = poll_instance.add_other_games.where(discord_id: channel.id).first_or_initialize
+    aog = AddOtherGame.where(discord_id: channel.id).first_or_initialize
+    # p aog
+    aog.poll_instance = poll_instance
     aog.choices = games_codes
     aog.save!
 

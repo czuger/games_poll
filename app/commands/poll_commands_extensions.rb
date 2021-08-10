@@ -18,19 +18,7 @@ module PollCommandsExtensions
       pm.title = title
       pm.save!
 
-      emoji = 0
-      server.orga_choices.where(before: true).order(:name).each do |orga|
-        emoji = set_models_choice(pm, emoji, orga)
-      end
-
-      server.games.where(favored: true).order(:name).each do |g|
-        emoji = set_models_choice(pm, emoji, g)
-      end
-
-      server.orga_choices.where(before: false).order(:name).each do |orga|
-        emoji = set_models_choice(pm, emoji, orga)
-      end
-
+      pm.add_games(server.games.where(favored: true))
       # pi.show event
       # The id of the message is changed during show. Indeed, we need the id of the message
       # we created, not the id of the command that required poll creation.
@@ -39,15 +27,4 @@ module PollCommandsExtensions
     # end
     'Poll added'
   end
-
-  private
-
-  def set_models_choice(pm, emoji, choice)
-    pig = PollModelsChoice.where(poll_model_id: pm.id, emoji: emoji).first_or_initialize
-    pig.choice = choice
-    pig.save!
-    emoji + 1
-  end
-
-
 end
