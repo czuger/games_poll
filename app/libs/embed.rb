@@ -33,16 +33,16 @@ class Embed
     embed
   end
 
-  def generate_embed_other_choice(embed, poll_model)
+  def self.generate_embed_other_choice(embed, poll_model)
     games_list = []
 
     selected_games_ids = poll_model.poll_models_choices.pluck(:choice_id)
-    server.games.order(:name).where.not(id: selected_games_ids).each_with_index do |unselected_game, i|
+    poll_model.server.games.order(:name).where.not(id: selected_games_ids).each_with_index do |unselected_game, i|
       msg = "#{Vote.num_to_emoji(i)} #{unselected_game.name}"
       games_list << msg
     end
 
-    embed.add_field(name: title, value: games_list.join("\n"), inline: false)
+    embed.add_field(name: 'Other games', value: games_list.join("\n"), inline: false)
     embed
   end
 

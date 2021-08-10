@@ -67,7 +67,7 @@ class Reactions
         # pp poll_choice
         channel = sender.pm
         result = channel.send_embed do |embed|
-          embed = Embed.generate_embed_votes(embed, pi)
+          embed = Embed.generate_embed_other_choice(embed, pi.poll_model)
         end
 
       end
