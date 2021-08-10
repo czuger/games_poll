@@ -1,17 +1,18 @@
 require_relative '../models/server'
 require_relative '../models/channel'
 require_relative '../models/poll_model'
-require_relative '../models/poll_instances_choice'
+require_relative '../models/poll_models_choice'
+require_relative '../models/poll_instance'
 require_relative 'poll_commands_extensions'
 require_relative 'common'
 
 module Commands
   class PollCommands < Common
     COMMANDS = [
-        [ 'pa', 'Create a new poll model' ],
-        [ 'ps', 'Schedule a poll model' ],
-        [ 'pf', 'Force create instance and show' ],
-        [ 'pl', 'List poll models' ],
+        [ 'pa', 'Create a new poll' ],
+        [ 'ps', 'Schedule a poll' ],
+        [ 'pd', 'Display a poll' ],
+        [ 'pl', 'List poll' ],
         [ 'ph', 'Show this message' ]
     ]
 
@@ -29,9 +30,10 @@ module Commands
       content = event.message.content.split
 
       content.shift
-      poll_id = content.shift
+      poll_name_or_id = content.shift
       # Find raise an error if not found
-      p = PollModel.find_by(id: poll_id)
+      p = PollModel.where(id: poll_name_or_id).
+        or(PollModel.where(name: poll_name_or_id)).first
 
       if p
         yield p, content
@@ -41,27 +43,21 @@ module Commands
       end
     end
 
-    # Poll add
-    def self.pa(event)
-      s = Server.get_or_create event.server.id
-
-      content = event.message.content.split
-      content.shift
-      name = content.join(' ')
-
-      g = PollModel.where(server_id: s.id, name: name).first_or_initialize
-      g.name = name
-      g.save!
-    end
-
     # Poll schedule
-    def self.ps(event)
-      self.find_and_exec(event) do |p, content|
-        day = content.shift
+    # def self.ps(event)
+    #   self.find_and_exec(event) do |p, content|
+    #     day = content.shift
+    #
+    #     ps = PollSchedule.where(poll_model_id: p.id, day: day).first_or_initialize
+    #     ps.day = day
+    #     ps.save!
+    #   end
+    # end
 
-        ps = PollSchedule.where(poll_model_id: p.id, day: day).first_or_initialize
-        ps.day = day
-        ps.save!
+    def self.pd(event)
+      self.find_and_exec(event) do |pm, _|
+        pi = pm.get_or_create_instance(event)
+        pi.show(event)
       end
     end
 

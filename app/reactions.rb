@@ -1,5 +1,5 @@
 require_relative 'models/poll_instance'
-require_relative 'models/poll_instances_choice'
+require_relative 'models/poll_models_choice'
 require_relative 'models/voter'
 require_relative 'models/vote'
 
@@ -34,7 +34,7 @@ class Reactions
         emoji_number = Vote.emoji_to_num(reaction_event.emoji.name)
         puts "Emoji reaction : #{emoji_number}"
 
-        poll_choice = PollInstancesChoice.where(poll_instance_id: pi.id, emoji: emoji_number).take
+        poll_choice = pi.poll_model.poll_models_choices.where(emoji: emoji_number).take
         # p game_id
 
         if poll_choice
@@ -52,7 +52,7 @@ class Reactions
 
   def self.update_voters(reaction_event, pi)
     new_embed = Discordrb::Webhooks::Embed.new
-    new_embed = PollInstance.generate_embed(new_embed, pi)
+    new_embed = Embed.generate_embed_votes(new_embed, pi)
     reaction_event.message.edit(nil, new_embed=new_embed)
   end
 
@@ -67,7 +67,7 @@ class Reactions
         # pp poll_choice
         channel = sender.pm
         result = channel.send_embed do |embed|
-          embed = PollInstance.generate_embed(embed, pi)
+          embed = Embed.generate_embed_votes(embed, pi)
         end
 
       end

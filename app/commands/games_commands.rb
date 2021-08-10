@@ -85,6 +85,7 @@ module Commands
     end
 
     def self.gi_insert(server, title, favored)
+      title.strip!
       game = server.games.where(name: title).first_or_initialize
       game.favored = favored
       game.save!
@@ -98,7 +99,7 @@ module Commands
           self.gi_insert(s, title, true)
         end
         File.open('data/regular.txt').readlines.each do |title|
-          self.gi_insert(s, title, true)
+          self.gi_insert(s, title, false)
         end
 
         [['Present avec les clefs', true, false], ['Autres', false, true], ['Absent', false, false]].each do |e|
