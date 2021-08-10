@@ -1,7 +1,7 @@
 require_relative '../models/server'
 require_relative '../models/channel'
 require_relative '../models/poll_model'
-require_relative '../models/poll_models_choice'
+require_relative '../models/poll_instance_choice'
 require_relative '../models/poll_instance'
 require_relative 'poll_commands_extensions'
 require_relative 'common'
@@ -28,19 +28,22 @@ module Commands
 
     def self.find_and_exec(event)
       content = event.message.content.split
-
       content.shift
       poll_name_or_id = content.shift
-      # Find raise an error if not found
-      p = PollModel.where(id: poll_name_or_id).
-        or(PollModel.where(name: poll_name_or_id)).first
 
-      if p
-        yield p, content
-        event.channel.send_temporary_message('Done', 30)
-      else
-        event.channel.send_temporary_message('Poll not found', 30)
+      ActiveRecord::Base.transaction do
+        # Find raise an error if not found
+        p = PollModel.where(id: poll_name_or_id).
+          or(PollModel.where(name: poll_name_or_id)).first
+
+        if p
+          yield p, content
+          event.channel.send_temporary_message('Done', 30)
+        else
+          event.channel.send_temporary_message('Poll not found', 30)
+        end
       end
+
     end
 
     # Poll schedule
@@ -54,6 +57,11 @@ module Commands
     #   end
     # end
 
+
+    # TODO : After adding a new game, need to show the poll again
+    # Also need to set votes for voters.
+    # When resetting the poll instance (in case of reset or consequence of schedule)
+    # Add a table called votes_history and move old votes into this table (same type as votes)
     def self.pd(event)
       self.find_and_exec(event) do |pm, _|
         pi = pm.get_or_create_instance(event)

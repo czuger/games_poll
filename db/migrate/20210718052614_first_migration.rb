@@ -25,8 +25,18 @@ class FirstMigration < ActiveRecord::Migration[6.0]
     add_index :poll_models, [:server_id, :name], unique: true
 
 
-    create_table :poll_models_choices do |t|
-      t.references :poll_model, null: false, index: false
+    create_table :poll_instances do |t|
+      t.references :poll_model, null: false
+      t.references :channel, null: false
+
+      t.string :discord_message_id, index: { unique: true }, null: false
+
+      t.timestamps
+    end
+
+
+    create_table :poll_instance_choices do |t|
+      t.references :poll_instance, null: false, index: false
       t.bigint :choice_id, null: false, index: false
       t.string :choice_type, null: false, index: false
 
@@ -34,17 +44,8 @@ class FirstMigration < ActiveRecord::Migration[6.0]
 
       t.timestamps
     end
-    add_index :poll_models_choices, [:poll_model_id, :choice_id, :choice_type], unique: true,
-              name: :poll_models_choices_unique_index
-
-
-    create_table :poll_instances do |t|
-      t.references :poll_model, null: false
-      t.references :channel, null: false
-      t.string :discord_id, index: { unique: true }, null: false
-
-      t.timestamps
-    end
+    add_index :poll_instance_choices, [:poll_instance_id, :choice_id, :choice_type], unique: true,
+              name: :poll_instance_choices_unique_index
 
 
     create_table :poll_schedules do |t|

@@ -21,7 +21,7 @@ class Embed
       voters[self.choice_to_key(votes)] << votes.voter.name
     end
 
-    poll_instance.poll_model.poll_models_choices.includes(:choice).order(:emoji).each do |pic|
+    poll_instance.poll_instance_choices.includes(:choice).order(:emoji).each do |pic|
       msg = "#{Vote.num_to_emoji(pic.emoji)} #{pic.choice.name}"
 
       if voters[self.choice_to_key(pic)] && !voters[self.choice_to_key(pic)].empty?
@@ -30,6 +30,8 @@ class Embed
 
       games_list << msg
     end
+
+    p games_list
 
     embed.add_field(name: title, value: games_list.join("\n"), inline: false)
     embed
@@ -40,7 +42,7 @@ class Embed
     games_codes = {}
 
     pm = poll_instance.poll_model
-    selected_games_ids = pm.poll_models_choices.pluck(:choice_id)
+    selected_games_ids = poll_instance.poll_instance_choices.pluck(:choice_id)
     pm.server.games.order(:name).where.not(id: selected_games_ids).each_with_index do |unselected_game, i|
       games_codes[i+1] = unselected_game.id
 

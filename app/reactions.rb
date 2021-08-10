@@ -1,5 +1,5 @@
 require_relative 'models/poll_instance'
-require_relative 'models/poll_models_choice'
+require_relative 'models/poll_instance_choice'
 require_relative 'models/voter'
 require_relative 'models/vote'
 require_relative 'models/add_other_game'
@@ -22,13 +22,12 @@ class Reactions
     Thread.new do
       bot.add_await!( Discordrb::Events::MessageEvent) do |reaction_event|
         f = AddOtherGame.where(discord_id: reaction_event.channel.id).first
-        p f
-        pp reaction_event.message.text
-
-        game = Game.find(f.choices[reaction_event.message.text.to_i])
-        p game
-
-        f.poll_instance.poll_model.add_games([game])
+        if f
+          game = Game.where(id: f.choices[reaction_event.message.text.to_i]).first
+          if game
+            f.poll_instance.add_games([game])
+          end
+        end
 
         false
       end
@@ -43,13 +42,13 @@ class Reactions
       voter.name = reaction_event.user.name
       voter.save!
 
-      pi = PollInstance.where(discord_id: reaction_event.message.id).take
+      pi = PollInstance.where(discord_message_id: reaction_event.message.id).take
       # p pi
       if pi
         emoji_number = Vote.emoji_to_num(reaction_event.emoji.name)
-        puts "Emoji reaction : #{emoji_number}"
+        # puts "Emoji reaction : #{emoji_number}"
 
-        poll_choice = pi.poll_model.poll_models_choices.where(emoji: emoji_number).take
+        poll_choice = pi.poll_instance_choices.where(emoji: emoji_number).take
         # p game_id
 
         if poll_choice
@@ -73,18 +72,17 @@ class Reactions
 
   def self.up_vote(reaction_event)
     process_message(reaction_event) do |pi, voter, poll_choice, sender|
-
-      vote = Vote.where(poll_instance_id: pi.id, voter_id: voter.id,
-                        choice_id: poll_choice.choice_id, choice_type: poll_choice.choice_type).first_or_initialize
-      vote.save!
-
       if poll_choice.is_others_games_button?
         # pp poll_choice
         channel = sender.pm
         result = channel.send_embed do |embed|
           embed = Embed.generate_embed_other_choice(channel, embed, pi)
         end
-
+      else
+        vote = Vote.where(poll_instance_id: pi.id, voter_id: voter.id,
+                          choice_id: poll_choice.choice_id,
+                          choice_type: poll_choice.choice_type).first_or_initialize
+        vote.save!
       end
     end
   end

@@ -18,11 +18,11 @@ module PollCommandsExtensions
       pm.title = title
       pm.save!
 
-      pm.add_games(server.games.where(favored: true))
+      # pm.add_games(server.games.where(favored: true))
       # pi.show event
       # The id of the message is changed during show. Indeed, we need the id of the message
       # we created, not the id of the command that required poll creation.
-      pm.save!
+      # pm.save!
     end
     # end
     'Poll added'

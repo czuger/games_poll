@@ -1,6 +1,6 @@
 require_relative 'common'
 
-class PollModelsChoice < ActiveRecord::Base
+class PollInstanceChoice < ActiveRecord::Base
   belongs_to :poll_instance
   belongs_to :choice, polymorphic: true
 
