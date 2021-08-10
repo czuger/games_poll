@@ -1,3 +1,5 @@
+require_relative '../models/add_other_game'
+
 class Embed
 
   def self.has_voters(voters_list)
@@ -33,14 +35,22 @@ class Embed
     embed
   end
 
-  def self.generate_embed_other_choice(embed, poll_model)
+  def self.generate_embed_other_choice(channel, embed, poll_instance)
     games_list = []
+    games_codes = {}
 
-    selected_games_ids = poll_model.poll_models_choices.pluck(:choice_id)
-    poll_model.server.games.order(:name).where.not(id: selected_games_ids).each_with_index do |unselected_game, i|
-      msg = "#{Vote.num_to_emoji(i)} #{unselected_game.name}"
+    pm = poll_instance.poll_model
+    selected_games_ids = pm.poll_models_choices.pluck(:choice_id)
+    pm.server.games.order(:name).where.not(id: selected_games_ids).each_with_index do |unselected_game, i|
+      games_codes[i+1] = unselected_game.name
+
+      msg = "#{i+1} - #{unselected_game.name}"
       games_list << msg
     end
+
+    aog = poll_instance.add_other_games.where(discord_id: channel.id).first_or_initialize
+    aog.choices = games_codes
+    aog.save!
 
     embed.add_field(name: 'Other games', value: games_list.join("\n"), inline: false)
     embed

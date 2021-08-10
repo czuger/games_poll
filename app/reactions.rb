@@ -18,6 +18,12 @@ class Reactions
         false
       end
     end
+    Thread.new do
+      bot.add_await!( Discordrb::Events::MessageEvent) do |reaction_event|
+        pp reaction_event.message
+        false
+      end
+    end
   end
 
   def self.process_message(reaction_event)
@@ -67,7 +73,7 @@ class Reactions
         # pp poll_choice
         channel = sender.pm
         result = channel.send_embed do |embed|
-          embed = Embed.generate_embed_other_choice(embed, pi.poll_model)
+          embed = Embed.generate_embed_other_choice(channel, embed, pi)
         end
 
       end

@@ -9,6 +9,8 @@ class PollInstance < ActiveRecord::Base
   has_many :votes
   has_many :voters, through: :votes
 
+  has_many :add_other_games
+
   extend Models::Common
 
   def show(event)

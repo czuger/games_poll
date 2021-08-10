@@ -92,6 +92,14 @@ class FirstMigration < ActiveRecord::Migration[6.0]
               name: :votes_unique_index
 
 
+    create_table :add_other_games do |t|
+      t.references :poll_instance, null: false, index: false
+      t.string :discord_id, index: { unique: true }, null: false
+      t.string :choices, null: false
+
+      t.timestamps
+    end
+
 
     # create_join_table :poll_instances, :games
     # add_index :games_poll_instances, [:poll_instance_id, :game_id], unique: true
