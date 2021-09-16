@@ -13,6 +13,7 @@ module Commands
         [ 'ps', 'Schedule a poll' ],
         [ 'pd', 'Display a poll' ],
         [ 'pl', 'List poll' ],
+        [ 'pc', 'Clean polls' ],
         [ 'ph', 'Show this message' ]
     ]
 
@@ -62,10 +63,11 @@ module Commands
     # Also need to set votes for voters.
     # When resetting the poll instance (in case of reset or consequence of schedule)
     # Add a table called votes_history and move old votes into this table (same type as votes)
+    # Display a poll
     def self.pd(event)
       self.find_and_exec(event) do |pm, _|
         pi = pm.get_or_create_instance(event)
-        pi.show(event)
+        pi.show(event.channel)
       end
     end
 
@@ -82,6 +84,19 @@ module Commands
         'No polls'
       else
         event.channel.send_temporary_message(polls_list.join, 30)
+      end
+    end
+
+    # Clean poll (remove old games - in the future : unvoted games)
+    def self.pc(event)
+      self.find_and_exec(event) do |pm, _|
+        pi = pm.get_or_create_instance(event)
+
+        polls_to_remove = pi.poll_instance_choices.order('created_at').to_a
+        polls_to_remove.shift(5)
+
+        PollInstanceChoice.delete(polls_to_remove.map(&:id))
+        'Polls removed : #{polls_to_remove.map(&:id)}'
       end
     end
 

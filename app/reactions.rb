@@ -25,7 +25,13 @@ class Reactions
         if f
           game = Game.where(id: f.choices[reaction_event.message.text.to_i]).first
           if game
+            pi = f.poll_instance
             f.poll_instance.add_games([game])
+
+            p pi.channel_id
+            channel = reaction_event.bot.channel(pi.channel.discord_id)
+            p channel
+            pi.show(channel)
           end
         end
 

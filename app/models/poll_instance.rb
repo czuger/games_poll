@@ -5,6 +5,7 @@ require_relative '../libs/embed'
 
 class PollInstance < ActiveRecord::Base
   belongs_to :poll_model
+  belongs_to :channel
 
   has_many :votes
   has_many :voters, through: :votes
@@ -16,14 +17,14 @@ class PollInstance < ActiveRecord::Base
 
   extend Models::Common
 
-  def show(event)
-    new_message = event.channel.send_embed do |embed|
+  def show(channel)
+    new_message = channel.send_embed do |embed|
       Embed.generate_embed_votes(embed, self)
     end
 
     self.poll_instance_choices.order(:emoji).each do |pic|
         sleep(0.1)
-        new_message.create_reaction(Vote.num_to_emoji(pic.emoji))
+        p new_message.create_reaction(Vote.num_to_emoji(pic.emoji))
     end
 
     # As we created a new message, we need to relink the poll_instance to that new message id.
