@@ -1,6 +1,7 @@
-require_relative 'poll_model'
+require_relative 'poll_choice'
 require_relative 'common'
 require_relative 'vote'
+require_relative 'channel'
 require_relative '../libs/embed'
 
 class Poll < ActiveRecord::Base
@@ -32,21 +33,21 @@ class Poll < ActiveRecord::Base
   end
 
   def add_games(games)
-    server = poll_model.server
+    server = self.channel.server
 
     emoji = 0
-    server.orga_choices.where(before: true).order(:name).each do |orga|
+    server.server_choices.where(before: true).order(:name).each do |orga|
       emoji = set_models_choice(self, emoji, orga)
     end
 
-    games_ids = poll_instance_choices.where(choice_type: 'Game').pluck(:choice_id)
+    games_ids = poll_choices.where(choice_type: 'Game').pluck(:choice_id)
     games_ids += games.map{ |e| e.id }
 
     server.games.where(id: games_ids).order(:name).each do |g|
       emoji = set_models_choice(self, emoji, g)
     end
 
-    server.orga_choices.where(before: false).order(:name).each do |orga|
+    server.server_choices.where(before: false).order(:name).each do |orga|
       emoji = set_models_choice(self, emoji, orga)
     end
   end
@@ -54,7 +55,7 @@ class Poll < ActiveRecord::Base
   private
 
   def set_models_choice(pi, emoji, choice)
-    pig = PollChoice.where(poll_instance_id: pi.id, emoji: emoji).first_or_initialize
+    pig = PollChoice.where(poll_id: pi.id, emoji: emoji).first_or_initialize
     pig.choice = choice
     pig.save!
     emoji + 1

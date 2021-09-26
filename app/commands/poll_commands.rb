@@ -3,8 +3,9 @@ require_relative '../models/channel'
 require_relative '../models/poll_model'
 require_relative '../models/poll_choice'
 require_relative '../models/poll'
-require_relative 'poll_commands_extensions'
+require_relative 'polls/add'
 require_relative 'common'
+require_relative 'commands/polls/add'
 
 module Commands
   class PollCommands < Common
@@ -17,7 +18,7 @@ module Commands
         [ 'ph', 'Show this message' ]
     ]
 
-    extend PollCommandsExtensions
+    extend Add
 
     def self.init_bot(bot)
       COMMANDS.map{|e| e[0]}.each do |command|
@@ -98,6 +99,11 @@ module Commands
         PollChoice.delete(polls_to_remove.map(&:id))
         'Polls removed : #{polls_to_remove.map(&:id)}'
       end
+    end
+
+    # Create a new poll
+    def self.pa(event)
+      Polls::Add.pa event.channel.server.id, idevent.channel.id, event.message.content
     end
 
     # Poll help

@@ -27,7 +27,7 @@ module Commands
 
     # Game add
     def self.ga(event)
-      Games::All.ga event.server.id
+      Games::All.ga event.server.id, event.message.content
     end
 
     # Game update name
@@ -56,7 +56,7 @@ module Commands
 
     # Game list
     def self.gl(event)
-      return Games::All.gl event.server.id
+      return Games::All.gl event, event.server.id
     end
 
     # Set the default games for the server

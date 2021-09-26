@@ -22,9 +22,9 @@ module Commands
       end
 
       # Game add
-      def self.ga(discord_server_id)
+      def self.ga(discord_server_id, message_content)
         s = Server.get_or_create discord_server_id
-        content = event.message.content.split
+        content = message_content.split
 
         content.shift
         name = content.join(' ')
@@ -37,11 +37,11 @@ module Commands
 
 
       # Game list
-      def self.gl(discord_server_id)
+      def self.gl(event, discord_server_id)
         s = Server.get_or_create discord_server_id
 
         game_list_message = s.games.order(:name).map{ |e| "#{e.id} - #{e.name} #{('+' if e.favored)}\n" }.join
-        p game_list_message
+        # p game_list_message
         event.channel.send_temporary_message(game_list_message, 30)
       end
 
