@@ -4,8 +4,11 @@ require_relative 'vote'
 require_relative 'channel'
 require_relative '../libs/embed'
 
+# A poll object
+# A poll name is unique on a server
 class Poll < ActiveRecord::Base
-  belongs_to :channel
+  belongs_to :server
+  belongs_to :channel, optional: true
 
   has_many :votes
   has_many :voters, through: :votes
@@ -22,7 +25,7 @@ class Poll < ActiveRecord::Base
       Embed.generate_embed_votes(embed, self)
     end
 
-    self.poll_instance_choices.order(:emoji).each do |pic|
+    self.poll_choices.order(:emoji).each do |pic|
         sleep(0.1)
         p new_message.create_reaction(Vote.num_to_emoji(pic.emoji))
     end
@@ -33,7 +36,7 @@ class Poll < ActiveRecord::Base
   end
 
   def add_games(games)
-    server = self.channel.server
+    server = self.server
 
     emoji = 0
     server.server_choices.where(before: true).order(:name).each do |orga|

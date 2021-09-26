@@ -12,7 +12,7 @@ class Embed
 
   def self.generate_embed_votes(embed, poll_instance)
     # embed.title = 'A quoi voulez vous jouer samedi.'
-    title = poll_instance.poll_model.title
+    title = poll_instance.title
 
     games_list = []
     voters = {}
@@ -21,7 +21,7 @@ class Embed
       voters[self.choice_to_key(votes)] << votes.voter.name
     end
 
-    poll_instance.poll_instance_choices.includes(:choice).order(:emoji).each do |pic|
+    poll_instance.poll_choices.includes(:choice).order(:emoji).each do |pic|
       msg = "#{Vote.num_to_emoji(pic.emoji)} #{pic.choice.name}"
 
       if voters[self.choice_to_key(pic)] && !voters[self.choice_to_key(pic)].empty?

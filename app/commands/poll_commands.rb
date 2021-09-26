@@ -43,7 +43,6 @@ module Commands
           event.channel.send_temporary_message('Poll not found', 30)
         end
       end
-
     end
 
     # Poll schedule
@@ -64,10 +63,10 @@ module Commands
     # Add a table called votes_history and move old votes into this table (same type as votes)
     # Display a poll
     def self.pd(event)
-      self.find_and_exec(event) do |pm, _|
-        pi = pm.get_or_create_instance(event)
-        pi.show(event.channel)
-      end
+      server = Server.get_or_create(event.server.id)
+      poll = server.get_poll(event.message.content)
+      poll.show(event.channel)
+      nil
     end
 
     # Poll list
@@ -102,8 +101,7 @@ module Commands
     # Create a new poll
     def self.pa(event)
       Polls::Add.pa(
-        event.channel.server.id,
-        event.channel.id, event.message.content)
+        event.channel.server.id, event.message.content)
     end
 
     # Poll help

@@ -1,19 +1,6 @@
-require 'minitest/autorun'
-require 'active_record'
-require_relative '../app/commands/games/insert'
-require_relative '../app/commands/games/all'
+require_relative 'base_tests'
 
-class TestGames < MiniTest::Unit::TestCase
-
-  def setup
-    db_config = YAML.load_file( 'db/config.yml' )
-    ActiveRecord::Base.establish_connection(db_config['test'])
-
-    Game.delete_all
-    Server.delete_all
-
-    # ActiveRecord::Base.logger = Logger.new STDOUT
-  end
+class TestGames < BaseTests
 
   def test_gi
     Commands::Games::Insert.gi(1)

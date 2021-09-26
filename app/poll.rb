@@ -21,6 +21,8 @@ data_hash = JSON.parse(file)
 
 db_config = YAML.load_file( 'db/config.yml' )
 ActiveRecord::Base.establish_connection(db_config['development'])
+# Required to activate foreign keys on SQLite
+ActiveRecord::Base.connection.execute('PRAGMA foreign_keys = ON;')
 ActiveRecord::Base.logger = Logger.new STDOUT
 
 # Here we instantiate a `CommandBot` instead of a regular `Bot`, which has the functionality to add commands using the
