@@ -5,7 +5,7 @@ require_relative '../models/poll_choice'
 require_relative '../models/poll'
 require_relative 'polls/add'
 require_relative 'common'
-require_relative 'commands/polls/add'
+require_relative 'polls/add'
 
 module Commands
   class PollCommands < Common
@@ -17,8 +17,6 @@ module Commands
         [ 'pc', 'Clean polls' ],
         [ 'ph', 'Show this message' ]
     ]
-
-    extend Add
 
     def self.init_bot(bot)
       COMMANDS.map{|e| e[0]}.each do |command|
@@ -103,7 +101,9 @@ module Commands
 
     # Create a new poll
     def self.pa(event)
-      Polls::Add.pa event.channel.server.id, idevent.channel.id, event.message.content
+      Polls::Add.pa(
+        event.channel.server.id,
+        event.channel.id, event.message.content)
     end
 
     # Poll help

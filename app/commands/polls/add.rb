@@ -3,7 +3,7 @@ require_relative '../../models/poll'
 
 module Commands
   module Polls
-    module Add
+    class Add
 
       # Create a new poll
       def self.pa(discord_server_id, discord_channel_id, message_content)
