@@ -1,7 +1,8 @@
 require_relative '../models/server'
 require_relative '../models/game'
 require_relative 'common'
-require_relative './games/insert'
+require_relative 'games/insert'
+require_relative 'games/all'
 
 module Commands
   class GamesCommands < Common
@@ -26,20 +27,12 @@ module Commands
 
     # Game add
     def self.ga(event)
-      s = Server.get_or_create event.server.id
-      content = event.message.content.split
-
-      content.shift
-      name = content.join(' ')
-
-      g = Game.where(server_id: s.id, name: name).first_or_initialize
-      g.name = name
-      g.save!
+      Games::All.ga event.server.id
     end
 
-    # Game update
+    # Game update name
     def self.gu(event)
-      self.find_and_exec(event) do |g, content|
+      Games::All.find_and_exec(event.message.content) do |g, content|
         name = content.join(' ')
         g.name = name
         g.save!
@@ -48,14 +41,14 @@ module Commands
 
     # Game del
     def self.gd(event)
-      self.find_and_exec(event) do |g, _|
+      Games::All.find_and_exec(event.message.content) do |g, _|
         g.destroy!
       end
     end
 
     # Set game favored status
     def self.gf(event)
-      self.find_and_exec(event) do |g, _|
+      Games::All.find_and_exec(event.message.content) do |g, _|
         g.favored = !g.favored
         g.save!
       end
@@ -63,11 +56,7 @@ module Commands
 
     # Game list
     def self.gl(event)
-      s = Server.get_or_create event.server.id
-
-      game_list_message = s.games.order(:name).map{ |e| "#{e.id} - #{e.name} #{('+' if e.favored)}\n" }.join
-      p game_list_message
-      event.channel.send_temporary_message(game_list_message, 30)
+      return Games::All.gl event.server.id
     end
 
     # Set the default games for the server

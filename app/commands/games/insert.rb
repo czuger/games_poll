@@ -29,7 +29,7 @@ module Commands
             g.save!
           end
         end
-        'Done'
+        'Default games set'
       end
 
     end

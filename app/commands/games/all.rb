@@ -6,8 +6,8 @@ module Commands
   module Games
     class All
 
-      def self.find_and_exec(event)
-        content = event.message.content.split
+      def self.find_and_exec(message_content)
+        content = message_content.split
 
         content.shift
         game_id = content.shift
@@ -22,8 +22,8 @@ module Commands
       end
 
       # Game add
-      def self.ga(event)
-        s = Server.get_or_create event.server.id
+      def self.ga(discord_server_id)
+        s = Server.get_or_create discord_server_id
         content = event.message.content.split
 
         content.shift
@@ -32,35 +32,13 @@ module Commands
         g = Game.where(server_id: s.id, name: name).first_or_initialize
         g.name = name
         g.save!
+        'Game added'
       end
 
-      # Game update
-      def self.gu(event)
-        self.find_and_exec(event) do |g, content|
-          name = content.join(' ')
-          g.name = name
-          g.save!
-        end
-      end
-
-      # Game del
-      def self.gd(event)
-        self.find_and_exec(event) do |g, _|
-          g.destroy!
-        end
-      end
-
-      # Set game favored status
-      def self.gf(event)
-        self.find_and_exec(event) do |g, _|
-          g.favored = !g.favored
-          g.save!
-        end
-      end
 
       # Game list
-      def self.gl(event)
-        s = Server.get_or_create event.server.id
+      def self.gl(discord_server_id)
+        s = Server.get_or_create discord_server_id
 
         game_list_message = s.games.order(:name).map{ |e| "#{e.id} - #{e.name} #{('+' if e.favored)}\n" }.join
         p game_list_message
