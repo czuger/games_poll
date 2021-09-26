@@ -3,8 +3,7 @@ require_relative 'common'
 require_relative 'vote'
 require_relative '../libs/embed'
 
-class PollInstance < ActiveRecord::Base
-  belongs_to :poll_model
+class Poll < ActiveRecord::Base
   belongs_to :channel
 
   has_many :votes
@@ -12,7 +11,7 @@ class PollInstance < ActiveRecord::Base
 
   has_many :add_other_games
 
-  has_many :poll_instance_choices
+  has_many :poll_choices
   # has_many :choices, -> { order 'poll_instances_games.emoji' }, through: :poll_instances_choices
 
   extend Models::Common
@@ -55,7 +54,7 @@ class PollInstance < ActiveRecord::Base
   private
 
   def set_models_choice(pi, emoji, choice)
-    pig = PollInstanceChoice.where(poll_instance_id: pi.id, emoji: emoji).first_or_initialize
+    pig = PollChoice.where(poll_instance_id: pi.id, emoji: emoji).first_or_initialize
     pig.choice = choice
     pig.save!
     emoji + 1

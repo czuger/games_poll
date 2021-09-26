@@ -1,8 +1,8 @@
 require_relative '../models/server'
 require_relative '../models/channel'
 require_relative '../models/poll_model'
-require_relative '../models/poll_instance_choice'
-require_relative '../models/poll_instance'
+require_relative '../models/poll_choice'
+require_relative '../models/poll'
 require_relative 'poll_commands_extensions'
 require_relative 'common'
 
@@ -95,7 +95,7 @@ module Commands
         polls_to_remove = pi.poll_instance_choices.order('created_at').to_a
         polls_to_remove.shift(5)
 
-        PollInstanceChoice.delete(polls_to_remove.map(&:id))
+        PollChoice.delete(polls_to_remove.map(&:id))
         'Polls removed : #{polls_to_remove.map(&:id)}'
       end
     end

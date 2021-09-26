@@ -1,11 +1,11 @@
 require_relative 'common'
 
-class PollInstanceChoice < ActiveRecord::Base
-  belongs_to :poll_instance
+class PollChoice < ActiveRecord::Base
+  belongs_to :poll
   belongs_to :choice, polymorphic: true
 
   def is_others_games_button?
-    if choice_type == 'OrgaChoice'
+    if choice_type == 'ServerChoice'
       return choice.other_game_action
     end
     false

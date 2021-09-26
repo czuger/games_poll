@@ -1,5 +1,5 @@
-require_relative 'models/poll_instance'
-require_relative 'models/poll_instance_choice'
+require_relative 'models/poll'
+require_relative 'models/poll_choice'
 require_relative 'models/voter'
 require_relative 'models/vote'
 require_relative 'models/add_other_game'
@@ -48,7 +48,7 @@ class Reactions
       voter.name = reaction_event.user.name
       voter.save!
 
-      pi = PollInstance.where(discord_message_id: reaction_event.message.id).take
+      pi = Poll.where(discord_message_id: reaction_event.message.id).take
       # p pi
       if pi
         emoji_number = Vote.emoji_to_num(reaction_event.emoji.name)
@@ -65,7 +65,7 @@ class Reactions
           p "PollInstancesGame #{pi.id} not found !"
         end
       else
-        p "PollInstance #{reaction_event.message.id} not found !"
+        p "Poll #{reaction_event.message.id} not found !"
       end
     end
   end

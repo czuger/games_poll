@@ -1,6 +1,7 @@
 require_relative '../models/server'
 require_relative '../models/game'
 require_relative 'common'
+require_relative './games/insert'
 
 module Commands
   class GamesCommands < Common
@@ -20,21 +21,6 @@ module Commands
         bot.command command.to_sym do |event|
           self.send(command.to_s.gsub('-', '_'), event)
         end
-      end
-    end
-
-    def self.find_and_exec(event)
-      content = event.message.content.split
-
-      content.shift
-      game_id = content.shift
-      g = Game.find(game_id)
-
-      if g
-        yield g, content
-        event.channel.send_temporary_message('Done', 30)
-      else
-        event.channel.send_temporary_message('Game not found', 30)
       end
     end
 
@@ -84,32 +70,9 @@ module Commands
       event.channel.send_temporary_message(game_list_message, 30)
     end
 
-    def self.gi_insert(server, title, favored)
-      title.strip!
-      game = server.games.where(name: title).first_or_initialize
-      game.favored = favored
-      game.save!
-    end
-
+    # Set the default games for the server
     def self.gi(event)
-      s = Server.get_or_create event.server.id
-
-      ActiveRecord::Base.transaction do
-        File.open('data/favored.txt').readlines.each do |title|
-          self.gi_insert(s, title, true)
-        end
-        File.open('data/regular.txt').readlines.each do |title|
-          self.gi_insert(s, title, false)
-        end
-
-        [['Present avec les clefs', true, false], ['Autres', false, true], ['Absent', false, false]].each do |e|
-          g = s.orga_choices.where(name: e[0]).first_or_initialize
-          g.before = e[1]
-          g.other_game_action = e[2]
-          g.save!
-        end
-      end
-      'Done'
+      Games::Insert.gi event.server.id
     end
 
     # Game help

@@ -1,5 +1,5 @@
 require_relative 'voter'
-require_relative 'poll_instance'
+require_relative 'poll'
 
 class Vote < ActiveRecord::Base
   belongs_to :voter
