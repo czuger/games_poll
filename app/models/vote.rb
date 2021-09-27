@@ -2,7 +2,7 @@ require_relative 'voter'
 
 class Vote < ActiveRecord::Base
   belongs_to :voter
-  belongs_to :poll_instance
+  belongs_to :poll
   belongs_to :choice, polymorphic: true
 
   BASE_EMOJII = 127462

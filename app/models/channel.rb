@@ -4,7 +4,7 @@ require_relative 'common'
 class Channel < ActiveRecord::Base
   belongs_to :server
 
-  has_many  :poll_instances
+  has_many  :polls
 
   extend Models::Common
 

@@ -16,7 +16,7 @@ class Poll < ActiveRecord::Base
   has_many :add_other_games
 
   has_many :poll_choices
-  # has_many :choices, -> { order 'poll_instances_games.emoji' }, through: :poll_instances_choices
+  # has_many :choices, -> { order 'polls_games.emoji' }, through: :polls_choices
 
   extend Models::Common
 
@@ -27,12 +27,21 @@ class Poll < ActiveRecord::Base
 
     self.poll_choices.order(:emoji).each do |pic|
         sleep(0.1)
-        p new_message.create_reaction(Vote.num_to_emoji(pic.emoji))
+        new_message.create_reaction(Vote.num_to_emoji(pic.emoji))
     end
 
-    # As we created a new message, we need to relink the poll_instance to that new message id.
-    self.discord_message_id = new_message.id
-    self.save!
+    # As we created a new message, we need to relink the poll to that new message id.
+
+    ActiveRecord::Base.transaction do
+
+      p channel.server
+      server = Server.get_or_create(channel.server.id)
+      channel = Channel.get_or_create(channel.id, server.id)
+
+      self.discord_message_id = new_message.id
+      self.channel = channel
+      self.save!
+    end
   end
 
   def add_games(games)

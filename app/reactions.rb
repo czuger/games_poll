@@ -25,13 +25,17 @@ class Reactions
         if f
           game = Game.where(id: f.choices[reaction_event.message.text.to_i]).first
           if game
-            pi = f.poll_instance
-            f.poll_instance.add_games([game])
+            poll = f.poll
+            f.poll.add_games([game])
 
-            p pi.channel_id
-            channel = reaction_event.bot.channel(pi.channel.discord_id)
+
+            p poll.channel_id
+            channel = reaction_event.bot.channel(poll.channel.discord_id)
             p channel
-            pi.show(channel)
+
+            channel.delete_message(poll.discord_message_id)
+
+            poll.show(channel)
           end
         end
 
@@ -48,21 +52,21 @@ class Reactions
       voter.name = reaction_event.user.name
       voter.save!
 
-      pi = Poll.where(discord_message_id: reaction_event.message.id).take
-      # p pi
-      if pi
+      poll = Poll.where(discord_message_id: reaction_event.message.id).take
+      # p poll
+      if poll
         emoji_number = Vote.emoji_to_num(reaction_event.emoji.name)
         # puts "Emoji reaction : #{emoji_number}"
 
-        poll_choice = pi.poll_instance_choices.where(emoji: emoji_number).take
+        poll_choice = poll.poll_choices.where(emoji: emoji_number).take
         # p game_id
 
         if poll_choice
-          yield pi, voter, poll_choice, reaction_event.user
+          yield poll, voter, poll_choice, reaction_event.user
 
-          self.update_voters(reaction_event, pi)
+          self.update_voters(reaction_event, poll)
         else
-          p "PollInstancesGame #{pi.id} not found !"
+          p "Poll #{poll.id} not found !"
         end
       else
         p "Poll #{reaction_event.message.id} not found !"
@@ -70,22 +74,22 @@ class Reactions
     end
   end
 
-  def self.update_voters(reaction_event, pi)
+  def self.update_voters(reaction_event, poll)
     new_embed = Discordrb::Webhooks::Embed.new
-    new_embed = Embed.generate_embed_votes(new_embed, pi)
+    new_embed = Embed.generate_embed_votes(new_embed, poll)
     reaction_event.message.edit(nil, new_embed=new_embed)
   end
 
   def self.up_vote(reaction_event)
-    process_message(reaction_event) do |pi, voter, poll_choice, sender|
+    process_message(reaction_event) do |poll, voter, poll_choice, sender|
       if poll_choice.is_others_games_button?
         # pp poll_choice
         channel = sender.pm
         result = channel.send_embed do |embed|
-          embed = Embed.generate_embed_other_choice(channel, embed, pi)
+          embed = Embed.generate_embed_other_choice(channel, embed, poll)
         end
       else
-        vote = Vote.where(poll_instance_id: pi.id, voter_id: voter.id,
+        vote = Vote.where(poll_id: poll.id, voter_id: voter.id,
                           choice_id: poll_choice.choice_id,
                           choice_type: poll_choice.choice_type).first_or_initialize
         vote.save!
@@ -94,8 +98,8 @@ class Reactions
   end
 
   def self.down_vote(reaction_event)
-    process_message(reaction_event) do |pi, voter, poll_choice, sender|
-      Vote.where(poll_instance_id: pi.id, voter_id: voter.id,
+    process_message(reaction_event) do |poll, voter, poll_choice, sender|
+      Vote.where(poll_id: poll.id, voter_id: voter.id,
                  choice_id: poll_choice.choice_id, choice_type: poll_choice.choice_type).delete_all
     end
   end

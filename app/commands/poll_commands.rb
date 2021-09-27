@@ -90,7 +90,7 @@ module Commands
       self.find_and_exec(event) do |pm, _|
         pi = pm.get_or_create_instance(event)
 
-        polls_to_remove = pi.poll_instance_choices.order('created_at').to_a
+        polls_to_remove = pi.poll_choices.order('created_at').to_a
         polls_to_remove.shift(5)
 
         PollChoice.delete(polls_to_remove.map(&:id))
