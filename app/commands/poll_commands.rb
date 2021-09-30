@@ -7,6 +7,7 @@ require_relative 'polls/add'
 require_relative 'common'
 require_relative 'polls/add'
 require_relative '../libs/gp_logs'
+require 'pp'
 
 module Commands
   class PollCommands < Common
@@ -53,11 +54,26 @@ module Commands
 
     # Poll schedule
     def self.ps(event)
-      self.find_and_exec(event) do |p, content|
-        GpLogs.debug "In PollCommands.ps : content = #{content}"
-        p.schedule_day = content.first.to_i
-        p.save!
-        "Poll #{p.name} schedule updated to #{p.schedule_day}"
+      content = event.message.content.split
+      content.shift
+      poll_name = content.shift
+
+      GpLogs.debug "In PollCommands.ps : content = #{content}"
+
+      ActiveRecord::Base.transaction do
+        server = Server.get_or_create(event.server.id)
+        channel = server.get_or_create_channel(event.channel.id)
+
+        p = server.polls.where(name: poll_name).first
+
+        if p
+          p.schedule_day = content.first.to_i
+          p.channel = channel
+          p.save!
+          "Poll #{p.name} schedule updated to #{p.schedule_day}"
+        else
+          "Poll #{poll_name} does not exists"
+        end
       end
     end
 
@@ -82,6 +98,8 @@ module Commands
         # schedules = pm.poll_schedules.map{ |e| e.day }.join(', ')
         "#{pm.id} - #{pm.name} - #{pm.schedule_day}\n"
       end
+
+      # GpLogs.debug polls_list.pretty_inspect
 
       if polls_list.empty?
         'No polls'

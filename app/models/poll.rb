@@ -3,6 +3,7 @@ require_relative 'common'
 require_relative 'vote'
 require_relative 'channel'
 require_relative '../libs/embed'
+require_relative '../libs/gp_logs'
 
 # A poll object
 # A poll name is unique on a server
@@ -33,8 +34,8 @@ class Poll < ActiveRecord::Base
     # As we created a new message, we need to relink the poll to that new message id.
 
     ActiveRecord::Base.transaction do
+      GpLogs.debug "In Poll.show : channel.server = #{channel.server}"
 
-      p channel.server
       server = Server.get_or_create(channel.server.id)
       channel = Channel.get_or_create(channel.id, server.id)
 

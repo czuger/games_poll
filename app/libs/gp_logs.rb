@@ -1,3 +1,5 @@
+require 'colorize'
+
 class GpLogs
 
   @@logger = nil
@@ -7,12 +9,21 @@ class GpLogs
   end
 
   def self.info(msg)
-    get_logger.info(msg)
+    get_logger.info(msg.blue)
+  end
+
+  def self.warn(msg)
+    get_logger.warn(msg.yellow)
   end
 
   def self.error(msg)
-    get_logger.info(msg)
+    get_logger.info(msg.red)
   end
+
+  def self.fatal(msg)
+    get_logger.fatal(msg.red.on_black)
+  end
+
 
   private
 
