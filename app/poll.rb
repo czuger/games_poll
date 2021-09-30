@@ -41,6 +41,29 @@ bot.ready do |event|
   # pp event
 end
 
+Thread.new do
+
+  Poll.where(schedule_day: Time.now.wday).each do ||
+    # restart poll
+  end
+
+  bot.add_await!( Discordrb::Events::ReactionAddEvent) do |reaction_event|
+    # Since this code will run on every CROSS_MARK reaction, it might not
+    # be on our time message we sent earlier. We use `next` to skip the rest
+    # of the block unless it was our message that was reacted to.
+    # next true unless reaction_event.message.id == message.id
+
+    # Delete the matching message.
+    # message.delete
+
+    p reaction_event
+    p reaction_event.message.id
+    pp reaction_event
+    false
+  end
+end
+
+
 # Thread.new do
 #   bot.add_await!( Discordrb::Events::ReactionAddEvent) do |reaction_event|
 #     # Since this code will run on every CROSS_MARK reaction, it might not

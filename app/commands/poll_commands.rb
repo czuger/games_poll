@@ -31,14 +31,17 @@ module Commands
       content.shift
       poll_name_or_id = content.shift
 
+      server = Server.get_or_create(event.server.id)
+
       ActiveRecord::Base.transaction do
         # Find raise an error if not found
-        p = PollModel.where(id: poll_name_or_id).
-          or(PollModel.where(name: poll_name_or_id)).first
+        p = server.polls.where(id: poll_name_or_id).first
+        p = p || server.polls.where(name: poll_name_or_id).first
 
         if p
-          yield p, content
-          event.channel.send_temporary_message('Done', 30)
+          result = yield p, content
+          result ||= 'Done'
+          event.channel.send_temporary_message(result, 30)
         else
           event.channel.send_temporary_message('Poll not found', 30)
         end
@@ -46,15 +49,14 @@ module Commands
     end
 
     # Poll schedule
-    # def self.ps(event)
-    #   self.find_and_exec(event) do |p, content|
-    #     day = content.shift
-    #
-    #     ps = PollSchedule.where(poll_model_id: p.id, day: day).first_or_initialize
-    #     ps.day = day
-    #     ps.save!
-    #   end
-    # end
+    def self.ps(event)
+      self.find_and_exec(event) do |p, content|
+        puts "content = #{content}"
+        p.schedule_day = content.first.to_i
+        p.save!
+        "Poll #{p.name} schedule updated to #{p.schedule_day}"
+      end
+    end
 
 
     # TODO : After adding a new game, need to show the poll again
@@ -73,9 +75,9 @@ module Commands
     def self.pl(event)
       s = Server.get_or_create event.server.id
 
-      polls_list = s.poll_models.order(:name).map do |pm|
-        schedules = pm.poll_schedules.map{ |e| e.day }.join(', ')
-        "#{pm.id} - #{pm.name} - #{schedules}\n"
+      polls_list = s.polls.order(:name).map do |pm|
+        # schedules = pm.poll_schedules.map{ |e| e.day }.join(', ')
+        "#{pm.id} - #{pm.name} - #{pm.schedule_day}\n"
       end
 
       if polls_list.empty?
