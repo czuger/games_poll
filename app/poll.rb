@@ -15,6 +15,7 @@ require_relative 'commands/common'
 require_relative 'commands/games_commands'
 require_relative 'commands/poll_commands'
 require_relative 'reactions'
+require_relative 'libs/gp_logs'
 
 file = File.read('./config/bot.json')
 data_hash = JSON.parse(file)
@@ -23,7 +24,9 @@ db_config = YAML.load_file( 'db/config.yml' )
 ActiveRecord::Base.establish_connection(db_config['development'])
 # Required to activate foreign keys on SQLite
 ActiveRecord::Base.connection.execute('PRAGMA foreign_keys = ON;')
-ActiveRecord::Base.logger = Logger.new STDOUT
+ActiveRecord::Base.logger = Logger.new 'logs/db.log'
+
+# Discordrb.logger = Logger.new('logs/discordrb.log')
 
 # Here we instantiate a `CommandBot` instead of a regular `Bot`, which has the functionality to add commands using the
 # `command` method. We have to set a `prefix` here, which will be the character that triggers command execution.
@@ -34,12 +37,13 @@ Reactions.start bot
 Commands::GamesCommands.init_bot bot
 Commands::PollCommands.init_bot bot
 
-bot.run
-
 # pp bot
 bot.ready do |event|
   # pp event
+  GpLogs.info('Bot started')
 end
+
+bot.run
 
 Thread.new do
 

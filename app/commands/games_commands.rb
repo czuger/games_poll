@@ -3,6 +3,7 @@ require_relative '../models/game'
 require_relative 'common'
 require_relative 'games/insert'
 require_relative 'games/all'
+require_relative '../libs/gp_logs'
 
 module Commands
   class GamesCommands < Common
@@ -23,6 +24,8 @@ module Commands
           self.send(command.to_s.gsub('-', '_'), event)
         end
       end
+
+      GpLogs.info('GamesCommands initialized')
     end
 
     # Game add

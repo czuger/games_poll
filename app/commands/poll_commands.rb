@@ -6,6 +6,7 @@ require_relative '../models/poll'
 require_relative 'polls/add'
 require_relative 'common'
 require_relative 'polls/add'
+require_relative '../libs/gp_logs'
 
 module Commands
   class PollCommands < Common
@@ -24,6 +25,8 @@ module Commands
           self.send(command.to_s.gsub('-', '_'), event)
         end
       end
+
+      GpLogs.info('PollCommands initialized')
     end
 
     def self.find_and_exec(event)
@@ -51,7 +54,7 @@ module Commands
     # Poll schedule
     def self.ps(event)
       self.find_and_exec(event) do |p, content|
-        puts "content = #{content}"
+        GpLogs.debug "In PollCommands.ps : content = #{content}"
         p.schedule_day = content.first.to_i
         p.save!
         "Poll #{p.name} schedule updated to #{p.schedule_day}"
