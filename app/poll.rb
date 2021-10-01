@@ -21,7 +21,9 @@ file = File.read('./config/bot.json')
 data_hash = JSON.parse(file)
 
 db_config = YAML.load_file( 'db/config.yml' )
-ActiveRecord::Base.establish_connection(db_config['development'])
+db_env = ENV['RAILS_ENV'] || 'development'
+ActiveRecord::Base.establish_connection(db_config[db_env])
+
 # Required to activate foreign keys on SQLite
 ActiveRecord::Base.connection.execute('PRAGMA foreign_keys = ON;')
 ActiveRecord::Base.logger = Logger.new 'log/db.log'
