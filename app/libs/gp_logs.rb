@@ -28,7 +28,7 @@ class GpLogs
   private
 
   def self.get_logger
-    @@logger ||= Logger.new('logs/general.log')
+    @@logger ||= Logger.new('log/general.log')
     @@logger
   end
 

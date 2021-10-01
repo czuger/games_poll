@@ -24,7 +24,7 @@ db_config = YAML.load_file( 'db/config.yml' )
 ActiveRecord::Base.establish_connection(db_config['development'])
 # Required to activate foreign keys on SQLite
 ActiveRecord::Base.connection.execute('PRAGMA foreign_keys = ON;')
-ActiveRecord::Base.logger = Logger.new 'logs/db.log'
+ActiveRecord::Base.logger = Logger.new 'log/db.log'
 
 # Here we instantiate a `CommandBot` instead of a regular `Bot`, which has the functionality to add commands using the
 # `command` method. We have to set a `prefix` here, which will be the character that triggers command execution.
@@ -32,8 +32,11 @@ bot = Discordrb::Commands::CommandBot.new(
   token: data_hash['token'], prefix: Commands::Common::BOT_PREFIX, advanced_functionality: true,
   fancy_log: false)
 
-# bot.logger = Discordrb::Logger.new(fancy: true, streams: [Logger.new('logs/discordrb.log')])
-# Discordrb::LOGGER.streams = [Logger.new('logs/discordrb.log')]
+# bot.logger = Discordrb::Logger.new(fancy: true, streams: [Logger.new('log/discordrb.log')])
+# Discordrb::LOGGER.streams = [Logger.new('log/discordrb.log')]
+
+# Use views
+# https://support.discord.com/hc/en-us/articles/360055709773-View-as-Role-FAQ
 
 Reactions.start bot
 
