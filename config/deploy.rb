@@ -40,3 +40,9 @@ set :keep_releases, 10
 
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
+
+task :restart_bot do
+  execute './run_prod.sh'
+end
+
+after :finishing, :restart_bot
