@@ -42,7 +42,9 @@ set :keep_releases, 10
 # set :ssh_options, verify_host_key: :secure
 
 task :restart_bot do
-  execute './run_prod.sh'
+  on roles :all do
+    execute "#{deploy_to}/current/run_prod.sh"
+  end
 end
 
-after :finishing, :restart_bot
+after 'deploy:finished', :restart_bot
