@@ -7,4 +7,4 @@ cd $1
 
 pkill -f app/poll
 sleep 1
-bundle exec ruby app/poll.rb
+RAILS_ENV=production nohup bundle exec ruby app/poll.rb &
