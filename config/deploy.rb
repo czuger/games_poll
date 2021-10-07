@@ -43,7 +43,7 @@ set :keep_releases, 10
 
 task :restart_bot do
   on roles :all do
-    execute "#{deploy_to}/current/run_prod.sh"
+    execute "#{deploy_to}/current/run_prod.sh", "#{deploy_to}/current/"
   end
 end
 

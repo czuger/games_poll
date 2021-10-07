@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-rbenv local 3.0.2
+
+cd $1
+
+# rbenv local 3.0.2
 
 pkill -f app/poll
 sleep 1
