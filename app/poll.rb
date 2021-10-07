@@ -62,7 +62,7 @@ Thread.new do
       poll.show(channel)
     end
 
-    sleep 10
+    sleep 3600
   end
 end
 
