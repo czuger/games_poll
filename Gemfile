@@ -24,6 +24,7 @@ group :development do
   gem 'capistrano', '~> 3.10', require: false
   gem 'capistrano-rails', '~> 1.3', require: false
   gem 'capistrano-bundler', '~> 2.0'
+  gem 'capistrano-rbenv', '~> 2.2'
 
   gem 'ed25519', '~> 1.2'
   gem 'bcrypt_pbkdf', '~> 1.0'
