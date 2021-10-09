@@ -12,7 +12,9 @@ set :branch, :main
 set :deploy_to, '/home/webapp/ruby/games_poll'
 
 # set :rbenv_custom_path, '/usr/local/rbenv'
-set :rbenv_ruby, '3.0.2'
+set :rbenv_ruby, File.read('.ruby-version').strip
+set :rbenv_type, :user
+set :rbenv_prefix, '/usr/bin/rbenv exec'
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
