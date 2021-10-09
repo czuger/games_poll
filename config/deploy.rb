@@ -11,6 +11,9 @@ set :branch, :main
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '/home/webapp/ruby/games_poll'
 
+# set :rbenv_custom_path, '/usr/local/rbenv'
+set :rbenv_ruby, '3.0.2'
+
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
 
