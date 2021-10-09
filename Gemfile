@@ -6,7 +6,7 @@ git_source(:github) {|repo_name| 'https://github.com/#{repo_name}' }
 
 # gem 'rails'
 
-gem 'discordrb', git: 'https://github.com/shardlab/discordrb'
+gem 'discordrb', '3.4.2', git: 'https://github.com/shardlab/discordrb'
 
 gem 'standalone_migrations'
 
