@@ -6,6 +6,7 @@ require_relative '../models/poll'
 require_relative 'polls/add'
 require_relative 'common'
 require_relative 'polls/add'
+require_relative 'polls/restart'
 require_relative '../libs/gp_logs'
 require 'pp'
 
@@ -17,6 +18,7 @@ module Commands
         [ 'pd', 'Display a poll' ],
         [ 'pl', 'List poll' ],
         [ 'pc', 'Clean polls' ],
+        [ 'pr', 'Restart a poll' ],
         [ 'ph', 'Show this message' ]
     ]
 
@@ -125,6 +127,13 @@ module Commands
     def self.pa(event)
       Polls::Add.pa(
         event.channel.server.id, event.message.content)
+    end
+
+    # Restart a poll
+    def self.pr(event)
+      self.find_and_exec(event) do |poll, _|
+        Polls::Restart.pr(poll, event.channel)
+      end
     end
 
     # Poll help

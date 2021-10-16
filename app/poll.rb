@@ -16,6 +16,7 @@ require_relative 'commands/games_commands'
 require_relative 'commands/poll_commands'
 require_relative 'reactions'
 require_relative 'libs/gp_logs'
+require_relative 'commands/polls/restart'
 
 file = File.read('./config/bot.json')
 data_hash = JSON.parse(file)
@@ -59,7 +60,7 @@ Thread.new do
       channel = bot.channel(poll.channel.discord_id)
       GpLogs.debug "In schedule thread : Channel name = #{channel.name}"
 
-      poll.show(channel)
+      Polls::Restart.pr(poll, channel)
     end
 
     sleep 3600
