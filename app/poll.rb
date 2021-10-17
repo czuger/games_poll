@@ -63,7 +63,7 @@ Thread.new do
       channel = bot.channel(poll.channel.discord_id)
       GpLogs.debug "In schedule thread : Channel name = #{channel.name}"
 
-      Polls::Restart.pr(poll, channel)
+      Commands::Polls::Restart.pr(poll, channel)
     end
 
     sleep 3600
