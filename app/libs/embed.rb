@@ -17,8 +17,9 @@ class Embed
 
     games_list = []
     voters = {}
+
     poll.votes.includes(:voter).order('voters.name').each do |votes|
-      voters[self.choice_to_key(votes)] = []
+      voters[self.choice_to_key(votes)] ||= []
       voters[self.choice_to_key(votes)] << votes.voter.name
     end
 
