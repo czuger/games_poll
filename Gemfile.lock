@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/shardlab/discordrb
-  revision: 7c101bcac52424ed930c91fbf399d73b096ee740
+  revision: 68ecd8453287ed9a9d04ae80453e4638ef027298
   specs:
     discordrb (3.4.2)
       discordrb-webhooks (~> 3.4.2)
@@ -52,6 +52,9 @@ GEM
     capistrano-rails (1.6.1)
       capistrano (~> 3.1)
       capistrano-bundler (>= 1.1, < 3)
+    capistrano-rbenv (2.2.0)
+      capistrano (~> 3.1)
+      sshkit (~> 1.3)
     colorize (0.8.1)
     concurrent-ruby (1.1.9)
     crass (1.0.6)
@@ -141,9 +144,11 @@ DEPENDENCIES
   activerecord
   bcrypt_pbkdf (~> 1.0)
   capistrano (~> 3.10)
+  capistrano-bundler (~> 2.0)
   capistrano-rails (~> 1.3)
+  capistrano-rbenv (~> 2.2)
   colorize
-  discordrb!
+  discordrb (= 3.4.2)!
   ed25519 (~> 1.2)
   rake
   rerun

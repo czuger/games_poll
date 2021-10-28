@@ -17,7 +17,7 @@ class Poll < ActiveRecord::Base
   has_many :add_other_games
 
   has_many :poll_choices
-  # has_many :choices, -> { order 'polls_games.emoji' }, through: :polls_choices
+  has_many :games, -> {where('poll_choices.choice_type' => 'Game')}, through: :polls_choices
 
   extend Models::Common
 

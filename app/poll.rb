@@ -16,6 +16,7 @@ require_relative 'commands/games_commands'
 require_relative 'commands/poll_commands'
 require_relative 'reactions'
 require_relative 'libs/gp_logs'
+require_relative 'commands/polls/restart'
 
 file = File.read('./config/bot.json')
 data_hash = JSON.parse(file)
@@ -51,15 +52,18 @@ Thread.new do
 
     schedule_day = Time.now.wday
     scheduled_update_exclusion_duration = Time.now - 24*3600
+
+    GpLogs.debug "Polling day : #{schedule_day}, time : #{scheduled_update_exclusion_duration}"
+
     Poll.where(schedule_day: schedule_day).where('updated_at < ?', scheduled_update_exclusion_duration).each do |poll|
 
-      GpLogs.debug "poll #{poll} will be printed due to schedule the #{Time.now}"
+      GpLogs.debug "In schedule thread : poll #{poll.id} will be printed due to schedule the #{Time.now}"
       GpLogs.debug "In schedule thread : Bot token = #{bot.token}"
 
       channel = bot.channel(poll.channel.discord_id)
       GpLogs.debug "In schedule thread : Channel name = #{channel.name}"
 
-      poll.show(channel)
+      Commands::Polls::Restart.pr(poll, channel)
     end
 
     sleep 3600
