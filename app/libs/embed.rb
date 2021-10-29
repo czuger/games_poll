@@ -1,4 +1,5 @@
 require_relative '../models/add_other_game'
+require_relative 'gp_logs'
 
 class Embed
 
@@ -16,16 +17,19 @@ class Embed
 
     games_list = []
     voters = {}
+
     poll.votes.includes(:voter).order('voters.name').each do |votes|
-      voters[self.choice_to_key(votes)] = []
+      voters[self.choice_to_key(votes)] ||= []
       voters[self.choice_to_key(votes)] << votes.voter.name
     end
+
+    GpLogs.debug(voters)
 
     poll.poll_choices.includes(:choice).order(:emoji).each do |pic|
       msg = "#{Vote.num_to_emoji(pic.emoji)} #{pic.choice.name}"
 
       if voters[self.choice_to_key(pic)] && !voters[self.choice_to_key(pic)].empty?
-        msg += ' - ' + voters[self.choice_to_key(pic)].join(' - ')
+        msg += ' : ' + voters[self.choice_to_key(pic)].join(', ')
       end
 
       games_list << msg
