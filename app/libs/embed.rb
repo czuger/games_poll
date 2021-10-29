@@ -29,7 +29,7 @@ class Embed
       msg = "#{Vote.num_to_emoji(pic.emoji)} #{pic.choice.name}"
 
       if voters[self.choice_to_key(pic)] && !voters[self.choice_to_key(pic)].empty?
-        msg += ' - ' + voters[self.choice_to_key(pic)].join(' - ')
+        msg += ' : ' + voters[self.choice_to_key(pic)].join(', ')
       end
 
       games_list << msg
