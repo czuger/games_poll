@@ -48,8 +48,12 @@ class Reactions
     # pp reaction_event.user
     # pp reaction_event.user_id
     ActiveRecord::Base.transaction do
+
+      user_id = reaction_event.user.id
+      member = reaction_event.server.member(user_id)
+
       voter = Voter.where(discord_id: reaction_event.user.id).first_or_initialize
-      voter.name = reaction_event.user.name
+      voter.name = member.nick
       voter.save!
 
       poll = Poll.where(discord_message_id: reaction_event.message.id).take
