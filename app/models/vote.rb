@@ -1,4 +1,5 @@
 require_relative 'voter'
+require_relative '../libs/gp_logs'
 
 class Vote < ActiveRecord::Base
   belongs_to :voter
@@ -14,7 +15,9 @@ class Vote < ActiveRecord::Base
 
   def self.emoji_to_num(emoji_name)
     emoji_number = emoji_name.ord - BASE_EMOJII
-    puts "Emoji reaction : #{emoji_number}"
+
+    GpLogs.debug("Emoji reaction : #{emoji_number}", self.class, __method__)
+
     emoji_number
   end
 

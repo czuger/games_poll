@@ -80,9 +80,9 @@ bot.ready do |event|
   # pp event
   GpLogs.info('Bot started')
 
-  refresh_polls_loop(bot)
-
   pp Discordrb::Permissions::FLAGS
+
+  refresh_polls_loop(bot)
 end
 
 bot.run
