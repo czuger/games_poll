@@ -75,13 +75,20 @@ def refresh_polls_loop(bot)
   end
 end
 
-def show_permissions
+def show_permissions(bot)
+
+  GpLogs.debug("Bot's servers", self.class, __method__)
+
+  GpLogs.debug(bot.servers.pretty_inspect, self.class, __method__)
+
+  # GpLogs.debug(bot.servers[0][1].mpretty_inspect, self.class, __method__)
+
   Discordrb::Permissions::FLAGS.each do |flag|
     flag = flag[1]
     pc = Discordrb::PermissionCalculator.new
 
-    GpLogs.debug("Checking flag #{flag}", self.class, __method__)
-    GpLogs.debug("Checking flag #{pc.defined_permission}", self.class, __method__)
+    # GpLogs.debug("Checking flag #{flag}", self.class, __method__)
+    # GpLogs.debug("Checking flag #{pc.defined_permission}", self.class, __method__)
   end
 end
 
@@ -91,8 +98,7 @@ bot.ready do |event|
   GpLogs.info('Bot started', self.class, __method__)
   # GpLogs.info(bot.pretty_inspect)
 
-  GpLogs.debug("Bot's servers", self.class, __method__)
-  GpLogs.debug(bot.servers.pretty_inspect, self.class, __method__)
+  show_permissions(bot)
 
   refresh_polls_loop(bot)
 end
