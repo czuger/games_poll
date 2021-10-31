@@ -81,32 +81,37 @@ def show_permissions(bot)
 
   GpLogs.debug(bot.servers.pretty_inspect, self.class, __method__)
 
-  GpLogs.debug(bot.servers[487195321852624917].pretty_inspect, self.class, __method__)
+  first_server_id = bot.servers.keys.first
 
-  bot_profile = bot.profile.on(bot.servers[487195321852624917])
+  GpLogs.debug(bot.servers[first_server_id].pretty_inspect, self.class, __method__)
 
-  bot_permission = {}
-  bot_defined_permission = {}
+  bot_profile = bot.profile.on(bot.servers[first_server_id])
+
+  # bot_permission = {}
+  # bot_defined_permission = {}
 
   Discordrb::Permissions::FLAGS.each do |flag|
     flag = flag[1]
     # pc = Discordrb::PermissionCalculator.new
 
+    GpLogs.debug("#{flag} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}",
+                 self.class, __method__)
+
     # GpLogs.debug("Checking flag #{flag}", self.class, __method__)
     # GpLogs.debug("bot.permission? #{bot_profile.permission?(flag)}", self.class, __method__)
     # GpLogs.debug("bot.defined_permission? #{bot_profile.defined_permission?(flag)}", self.class, __method__)
 
-    bot_permission[flag] = bot_profile.permission?(flag)
-    bot_defined_permission[flag] = bot_profile.defined_permission?(flag)
+    # bot_permission[flag] = bot_profile.permission?(flag)
+    # bot_defined_permission[flag] = bot_profile.defined_permission?(flag)
 
     # GpLogs.debug("Checking flag #{pc.defined_permission}", self.class, __method__)
   end
 
-  GpLogs.debug("bot_permission", self.class, __method__)
-  GpLogs.debug(bot_permission.pretty_inspect, self.class, __method__)
-
-  GpLogs.debug("bot_defined_permission", self.class, __method__)
-  GpLogs.debug(bot_defined_permission.pretty_inspect, self.class, __method__)
+  # GpLogs.debug('bot_permission', self.class, __method__)
+  # GpLogs.debug(bot_permission.pretty_inspect, self.class, __method__)
+  #
+  # GpLogs.debug('bot_defined_permission', self.class, __method__)
+  # GpLogs.debug(bot_defined_permission.pretty_inspect, self.class, __method__)
 
 end
 
