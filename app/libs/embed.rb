@@ -23,7 +23,7 @@ class Embed
       voters[self.choice_to_key(votes)] << votes.voter.name
     end
 
-    GpLogs.debug(voters)
+    GpLogs.debug(voters, self.class, __method__)
 
     poll.poll_choices.includes(:choice).order(:emoji).each do |pic|
       msg = "#{Vote.num_to_emoji(pic.emoji)} #{pic.choice.name}"
@@ -35,7 +35,7 @@ class Embed
       games_list << msg
     end
 
-    p games_list
+    GpLogs.debug "Games list #{games_list}", self.class, __method__
 
     embed.add_field(name: title, value: games_list.join("\n"), inline: false)
     embed

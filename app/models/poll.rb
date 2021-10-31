@@ -34,7 +34,7 @@ class Poll < ActiveRecord::Base
     # As we created a new message, we need to relink the poll to that new message id.
 
     ActiveRecord::Base.transaction do
-      GpLogs.debug "In Poll.show : channel.server = #{channel.server}"
+      GpLogs.debug "In Poll.show : channel.server = #{channel.server}", self.class, __method__
 
       server = Server.get_or_create(channel.server.id)
       channel = Channel.get_or_create(channel.id, server.id)

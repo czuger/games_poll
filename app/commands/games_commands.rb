@@ -25,7 +25,7 @@ module Commands
         end
       end
 
-      GpLogs.info('GamesCommands initialized')
+      GpLogs.info('GamesCommands initialized', self.class, __method__)
     end
 
     # Game add

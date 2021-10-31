@@ -3,6 +3,7 @@ require_relative 'models/poll_choice'
 require_relative 'models/voter'
 require_relative 'models/vote'
 require_relative 'models/add_other_game'
+require_relative 'libs/gp_logs'
 
 class Reactions
 
@@ -28,10 +29,11 @@ class Reactions
             poll = f.poll
             f.poll.add_games([game])
 
+            GpLogs.debug "Poll channel id : #{poll.channel_id}", self.class, __method__
 
-            p poll.channel_id
             channel = reaction_event.bot.channel(poll.channel.discord_id)
-            p channel
+
+            GpLogs.debug "Channel : #{channel}", self.class, __method__
 
             channel.delete_message(poll.discord_message_id)
 
@@ -51,9 +53,11 @@ class Reactions
 
       user_id = reaction_event.user.id
       member = reaction_event.server.member(user_id)
+      voter_name = member.nick
+      voter_name ||= reaction_event.user.name
 
       voter = Voter.where(discord_id: reaction_event.user.id).first_or_initialize
-      voter.name = member.nick
+      voter.name = voter_name
       voter.save!
 
       poll = Poll.where(discord_message_id: reaction_event.message.id).take
@@ -70,10 +74,10 @@ class Reactions
 
           self.update_voters(reaction_event, poll)
         else
-          p "Poll #{poll.id} not found !"
+          GpLogs.warn "Poll #{poll.id} not found !", self.class, __method__
         end
       else
-        p "Poll #{reaction_event.message.id} not found !"
+        GpLogs.warn "Poll #{reaction_event.message.id} not found !", self.class, __method__
       end
     end
   end

@@ -53,15 +53,15 @@ Thread.new do
     schedule_day = Time.now.wday
     scheduled_update_exclusion_duration = Time.now - 24*3600
 
-    GpLogs.debug "Polling day : #{schedule_day}, time : #{scheduled_update_exclusion_duration}"
+    GpLogs.debug "Polling day : #{schedule_day}, time : #{scheduled_update_exclusion_duration}", self.class, __method__
 
     Poll.where(schedule_day: schedule_day).where('updated_at < ?', scheduled_update_exclusion_duration).each do |poll|
 
-      GpLogs.debug "In schedule thread : poll #{poll.id} will be printed due to schedule the #{Time.now}"
-      GpLogs.debug "In schedule thread : Bot token = #{bot.token}"
+      GpLogs.debug "In schedule thread : poll #{poll.id} will be printed due to schedule the #{Time.now}", self.class, __method__
+      GpLogs.debug "In schedule thread : Bot token = #{bot.token}", self.class, __method__
 
       channel = bot.channel(poll.channel.discord_id)
-      GpLogs.debug "In schedule thread : Channel name = #{channel.name}"
+      GpLogs.debug "In schedule thread : Channel name = #{channel.name}", self.class, __method__
 
       Commands::Polls::Restart.pr(poll, channel)
     end

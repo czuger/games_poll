@@ -29,7 +29,7 @@ module Commands
         end
       end
 
-      GpLogs.info('PollCommands initialized')
+      GpLogs.info('PollCommands initialized', self.class, __method__)
     end
 
     def self.find_and_exec(event)
@@ -60,7 +60,7 @@ module Commands
       content.shift
       poll_name = content.shift
 
-      GpLogs.debug "In PollCommands.ps : content = #{content}"
+      GpLogs.debug "In PollCommands.ps : content = #{content}", self.class, __method__
 
       ActiveRecord::Base.transaction do
         server = Server.get_or_create(event.server.id)
