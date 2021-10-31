@@ -33,7 +33,7 @@ ActiveRecord::Base.logger = Logger.new 'log/db.log'
 # `command` method. We have to set a `prefix` here, which will be the character that triggers command execution.
 bot = Discordrb::Commands::CommandBot.new(
   token: data_hash['token'], prefix: Commands::Common::BOT_PREFIX, advanced_functionality: true,
-  fancy_log: false)
+  fancy_log: false, log_mode: :debug)
 
 # bot.logger = Discordrb::Logger.new(fancy: true, streams: [Logger.new('log/discordrb.log')])
 # Discordrb::LOGGER.streams = [Logger.new('log/discordrb.log')]
@@ -65,7 +65,7 @@ def refresh_polls_loop(bot)
         GpLogs.debug "poll.channel.discord_id = #{poll.channel.discord_id}", self.class, __method__
 
         channel = bot.channel(poll.channel.discord_id)
-        GpLogs.debug "Channel name = #{channel.name}", self.class, __method__
+        GpLogs.debug "Channel name = #{channel.name}"
 
         Commands::Polls::Restart.pr(poll, channel)
       end
@@ -75,12 +75,21 @@ def refresh_polls_loop(bot)
   end
 end
 
+def show_permissions
+  Discordrb::Permissions::FLAGS.each do |flag|
+    flag = flag[1]
+    pc = Discordrb::PermissionCalculator.new
+
+    GpLogs.debug("Checking flag #{flag}", self.class, __method__)
+    GpLogs.debug("Checking flag #{pc.defined_permission}", self.class, __method__)
+  end
+end
+
 # pp bot
 bot.ready do |event|
   # pp event
   GpLogs.info('Bot started')
-
-  pp Discordrb::Permissions::FLAGS
+  GpLogs.info(bot.pretty_inspect)
 
   refresh_polls_loop(bot)
 end
