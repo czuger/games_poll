@@ -88,6 +88,9 @@ def show_permissions(bot)
     # pc = Discordrb::PermissionCalculator.new
 
     GpLogs.debug("Checking flag #{flag}", self.class, __method__)
+    GpLogs.debug("bot.permission? #{bot.permission?(flag)}", self.class, __method__)
+    GpLogs.debug("bot.defined_permission? #{bot.defined_permission?(flag)}", self.class, __method__)
+
     # GpLogs.debug("Checking flag #{pc.defined_permission}", self.class, __method__)
   end
 end
