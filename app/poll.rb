@@ -54,15 +54,15 @@ def refresh_polls_loop(bot)
       schedule_day = Time.now.wday
       scheduled_update_exclusion_duration = Time.now - 24*3600
 
-      GpLogs.debug "Polling day : #{schedule_day}, time : #{scheduled_update_exclusion_duration}", self.class, __method__
+      GpLogs.debug "Polling day : #{schedule_day}, time : #{scheduled_update_exclusion_duration}", 'Object', __method__
 
       Poll.where(schedule_day: schedule_day).where('updated_at < ?', scheduled_update_exclusion_duration).each do |poll|
 
-        GpLogs.debug "poll #{poll.id} will be printed due to schedule the #{Time.now}", self.class, __method__
-        GpLogs.debug "Bot token = #{bot.token}", self.class, __method__
+        GpLogs.debug "poll #{poll.id} will be printed due to schedule the #{Time.now}", 'Object', __method__
+        GpLogs.debug "Bot token = #{bot.token}", 'Object', __method__
 
-        GpLogs.debug "poll.channel = #{poll.channel}", self.class, __method__
-        GpLogs.debug "poll.channel.discord_id = #{poll.channel.discord_id}", self.class, __method__
+        GpLogs.debug "poll.channel = #{poll.channel}", 'Object', __method__
+        GpLogs.debug "poll.channel.discord_id = #{poll.channel.discord_id}", 'Object', __method__
 
         channel = bot.channel(poll.channel.discord_id)
         GpLogs.debug "Channel name = #{channel.name}"
@@ -77,51 +77,30 @@ end
 
 def show_permissions(bot)
 
-  GpLogs.debug("Bot's servers", self.class, __method__)
+  GpLogs.debug("Bot's servers", 'Object', __method__)
 
-  GpLogs.debug(bot.servers.pretty_inspect, self.class, __method__)
+  GpLogs.debug(bot.servers.pretty_inspect, 'Object', __method__)
 
   first_server_id = bot.servers.keys.first
 
-  GpLogs.debug(bot.servers[first_server_id].pretty_inspect, self.class, __method__)
+  GpLogs.debug(bot.servers[first_server_id].pretty_inspect, 'Object', __method__)
 
   bot_profile = bot.profile.on(bot.servers[first_server_id])
 
-  # bot_permission = {}
-  # bot_defined_permission = {}
-
   flags = Discordrb::Permissions::FLAGS.map{ |e| e[1] }.sort
 
-  # pp flags
-
   flags.each do |flag|
-    # pc = Discordrb::PermissionCalculator.new
 
     GpLogs.debug("#{flag.to_s.ljust(20, ' ')} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}",
-                 self.class, __method__)
+                 'Object', __method__)
 
-    # GpLogs.debug("Checking flag #{flag}", self.class, __method__)
-    # GpLogs.debug("bot.permission? #{bot_profile.permission?(flag)}", self.class, __method__)
-    # GpLogs.debug("bot.defined_permission? #{bot_profile.defined_permission?(flag)}", self.class, __method__)
-
-    # bot_permission[flag] = bot_profile.permission?(flag)
-    # bot_defined_permission[flag] = bot_profile.defined_permission?(flag)
-
-    # GpLogs.debug("Checking flag #{pc.defined_permission}", self.class, __method__)
   end
-
-  # GpLogs.debug('bot_permission', self.class, __method__)
-  # GpLogs.debug(bot_permission.pretty_inspect, self.class, __method__)
-  #
-  # GpLogs.debug('bot_defined_permission', self.class, __method__)
-  # GpLogs.debug(bot_defined_permission.pretty_inspect, self.class, __method__)
-
 end
 
 # pp bot
 bot.ready do |event|
   # pp event
-  GpLogs.info('Bot started', self.class, __method__)
+  GpLogs.info('Bot started', 'Object', __method__)
   # GpLogs.info(bot.pretty_inspect)
 
   show_permissions(bot)

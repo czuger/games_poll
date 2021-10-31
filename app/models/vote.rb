@@ -16,7 +16,7 @@ class Vote < ActiveRecord::Base
   def self.emoji_to_num(emoji_name)
     emoji_number = emoji_name.ord - BASE_EMOJII
 
-    GpLogs.debug("Emoji reaction : #{emoji_number}", self.class, __method__)
+    GpLogs.debug("Emoji reaction : #{emoji_number}", self.name, __method__)
 
     emoji_number
   end

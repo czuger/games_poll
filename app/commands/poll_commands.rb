@@ -8,6 +8,7 @@ require_relative 'common'
 require_relative 'polls/add'
 require_relative 'polls/restart'
 require_relative '../libs/gp_logs'
+require_relative '../libs/security'
 require 'pp'
 
 module Commands
@@ -16,9 +17,9 @@ module Commands
         [ 'pa', 'Create a new poll' ],
         [ 'ps', 'Schedule a poll' ],
         [ 'pd', 'Display a poll' ],
-        [ 'pl', 'List poll' ],
-        [ 'pc', 'Clean polls' ],
-        [ 'pr', 'Restart a poll' ],
+        [ 'pl', 'List polls' ],
+        [ 'pc', 'Clean polls (Admin only)' ],
+        [ 'pr', 'Restart a poll (Admin only)' ],
         [ 'ph', 'Show this message' ]
     ]
 
@@ -29,7 +30,7 @@ module Commands
         end
       end
 
-      GpLogs.info('PollCommands initialized', self.class, __method__)
+      GpLogs.info('PollCommands initialized', self.name, __method__)
     end
 
     def self.find_and_exec(event)
@@ -60,7 +61,7 @@ module Commands
       content.shift
       poll_name = content.shift
 
-      GpLogs.debug "In PollCommands.ps : content = #{content}", self.class, __method__
+      GpLogs.debug "In PollCommands.ps : content = #{content}", self.name, __method__
 
       ActiveRecord::Base.transaction do
         server = Server.get_or_create(event.server.id)
@@ -112,6 +113,7 @@ module Commands
 
     # Clean poll (remove old games - in the future : unvoted games)
     def self.pc(event)
+      return Security.forbidden_message unless Security.is_admin? event
       self.find_and_exec(event) do |pm, _|
         pi = pm.get_or_create_instance(event)
 
@@ -131,6 +133,7 @@ module Commands
 
     # Restart a poll
     def self.pr(event)
+      return Security.forbidden_message unless Security.is_admin? event
       self.find_and_exec(event) do |poll, _|
         Polls::Restart.pr(poll, event.channel)
       end

@@ -29,11 +29,11 @@ class Reactions
             poll = f.poll
             f.poll.add_games([game])
 
-            GpLogs.debug "Poll channel id : #{poll.channel_id}", self.class, __method__
+            GpLogs.debug "Poll channel id : #{poll.channel_id}", self.name, __method__
 
             channel = reaction_event.bot.channel(poll.channel.discord_id)
 
-            GpLogs.debug "Channel : #{channel}", self.class, __method__
+            GpLogs.debug "Channel : #{channel}", self.name, __method__
 
             channel.delete_message(poll.discord_message_id)
 
@@ -74,10 +74,10 @@ class Reactions
 
           self.update_voters(reaction_event, poll)
         else
-          GpLogs.warn "Poll #{poll.id} not found !", self.class, __method__
+          GpLogs.warn "Poll #{poll.id} not found !", self.name, __method__
         end
       else
-        GpLogs.warn "Poll #{reaction_event.message.id} not found !", self.class, __method__
+        GpLogs.warn "Poll #{reaction_event.message.id} not found !", self.name, __method__
       end
     end
   end

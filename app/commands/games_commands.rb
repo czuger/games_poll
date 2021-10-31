@@ -4,17 +4,18 @@ require_relative 'common'
 require_relative 'games/insert'
 require_relative 'games/all'
 require_relative '../libs/gp_logs'
+require_relative '../libs/security'
 
 module Commands
   class GamesCommands < Common
 
     COMMANDS = [
-        [ 'ga', 'Add a new game' ],
-        [ 'gu', 'Update a game name' ],
-        [ 'gd', 'Delete a game' ],
-        [ 'gf', 'Set a game favorite status' ],
+        [ 'ga', 'Add a new game (Admin only)' ],
+        [ 'gu', 'Update a game name (Admin only)' ],
+        [ 'gd', 'Delete a game (Admin only)' ],
+        [ 'gf', 'Set a game favorite status (Admin only)' ],
         [ 'gl', 'List all games' ],
-        [ 'gi', 'Set default games for server' ],
+        [ 'gi', 'Set default games for server (Admin only)' ],
         [ 'gh', 'Show this message' ]
     ]
 
@@ -25,16 +26,18 @@ module Commands
         end
       end
 
-      GpLogs.info('GamesCommands initialized', self.class, __method__)
+      GpLogs.info('GamesCommands initialized', self.name, __method__)
     end
 
     # Game add
     def self.ga(event)
+      return Security.forbidden_message unless Security.is_admin? event
       Games::All.ga event.server.id, event.message.content
     end
 
     # Game update name
     def self.gu(event)
+      return Security.forbidden_message unless Security.is_admin? event
       Games::All.find_and_exec(event.message.content) do |g, content|
         name = content.join(' ')
         g.name = name
@@ -44,6 +47,7 @@ module Commands
 
     # Game del
     def self.gd(event)
+      return Security.forbidden_message unless Security.is_admin? event
       Games::All.find_and_exec(event.message.content) do |g, _|
         g.destroy!
       end
@@ -51,6 +55,7 @@ module Commands
 
     # Set game favored status
     def self.gf(event)
+      return Security.forbidden_message unless Security.is_admin? event
       Games::All.find_and_exec(event.message.content) do |g, _|
         g.favored = !g.favored
         g.save!
@@ -64,6 +69,7 @@ module Commands
 
     # Set the default games for the server
     def self.gi(event)
+      return Security.forbidden_message unless Security.is_admin? event
       Games::Insert.gi event.server.id
     end
 
