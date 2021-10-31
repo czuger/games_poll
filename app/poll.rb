@@ -61,7 +61,6 @@ def refresh_polls_loop(bot)
         GpLogs.debug "poll #{poll.id} will be printed due to schedule the #{Time.now}", self.class, __method__
         GpLogs.debug "Bot token = #{bot.token}", self.class, __method__
 
-        GpLogs.debug "Bot token = #{bot.token}", self.class, __method__
         GpLogs.debug "poll.channel = #{poll.channel}", self.class, __method__
         GpLogs.debug "poll.channel.discord_id = #{poll.channel.discord_id}", self.class, __method__
 
@@ -82,6 +81,8 @@ bot.ready do |event|
   GpLogs.info('Bot started')
 
   refresh_polls_loop(bot)
+
+  p Discordrb::Permissions::FLAGS
 end
 
 bot.run
