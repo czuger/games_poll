@@ -81,7 +81,7 @@ def show_permissions(bot)
 
   GpLogs.debug(bot.servers.pretty_inspect, self.class, __method__)
 
-  # GpLogs.debug(bot.servers[0][1].mpretty_inspect, self.class, __method__)
+  GpLogs.debug(bot.servers[0].pretty_inspect, self.class, __method__)
 
   bot_profile = bot.profile.on(bot.servers[0][1])
 
