@@ -46,7 +46,7 @@ Reactions.start bot
 Commands::GamesCommands.init_bot bot
 Commands::PollCommands.init_bot bot
 
-def refresh_polls_loop
+def refresh_polls_loop(bot)
   Thread.new do
 
     while true
@@ -81,7 +81,7 @@ bot.ready do |event|
   # pp event
   GpLogs.info('Bot started')
 
-  refresh_polls_loop
+  refresh_polls_loop(bot)
 end
 
 bot.run
