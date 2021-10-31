@@ -90,11 +90,14 @@ def show_permissions(bot)
   # bot_permission = {}
   # bot_defined_permission = {}
 
-  Discordrb::Permissions::FLAGS.each do |flag|
-    flag = flag[1]
+  flags = Discordrb::Permissions::FLAGS.map{ |e| e[1] }.sort
+
+  # pp flags
+
+  flags.each do |flag|
     # pc = Discordrb::PermissionCalculator.new
 
-    GpLogs.debug("#{flag} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}",
+    GpLogs.debug("#{flag.to_s.ljust(20, ' ')} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}",
                  self.class, __method__)
 
     # GpLogs.debug("Checking flag #{flag}", self.class, __method__)
