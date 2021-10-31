@@ -88,8 +88,11 @@ end
 # pp bot
 bot.ready do |event|
   # pp event
-  GpLogs.info('Bot started')
-  GpLogs.info(bot.pretty_inspect)
+  GpLogs.info('Bot started', self.class, __method__)
+  # GpLogs.info(bot.pretty_inspect)
+
+  GpLogs.debug("Bot's servers", self.class, __method__)
+  GpLogs.debug(bot.servers.pretty_inspect, self.class, __method__)
 
   refresh_polls_loop(bot)
 end
