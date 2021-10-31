@@ -82,7 +82,7 @@ bot.ready do |event|
 
   refresh_polls_loop(bot)
 
-  p Discordrb::Permissions::FLAGS
+  pp Discordrb::Permissions::FLAGS
 end
 
 bot.run
