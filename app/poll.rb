@@ -86,6 +86,7 @@ def show_permissions(bot)
   bot_profile = bot.profile.on(bot.servers[487195321852624917])
 
   bot_permission = {}
+  bot_defined_permission = {}
 
   Discordrb::Permissions::FLAGS.each do |flag|
     flag = flag[1]
@@ -95,15 +96,17 @@ def show_permissions(bot)
     # GpLogs.debug("bot.permission? #{bot_profile.permission?(flag)}", self.class, __method__)
     # GpLogs.debug("bot.defined_permission? #{bot_profile.defined_permission?(flag)}", self.class, __method__)
 
-    bot_permission[flag] = {
-        'bot.permission?' => bot_profile.permission?(flag),
-        'bot.defined_permission?' => bot_profile.defined_permission?(flag)
-    }
+    bot_permission[flag] = bot_profile.permission?(flag)
+    bot_defined_permission[flag] = bot_profile.defined_permission?(flag)
 
     # GpLogs.debug("Checking flag #{pc.defined_permission}", self.class, __method__)
   end
 
+  GpLogs.debug("bot_permission", self.class, __method__)
   GpLogs.debug(bot_permission.pretty_inspect, self.class, __method__)
+
+  GpLogs.debug("bot_defined_permission", self.class, __method__)
+  GpLogs.debug(bot_defined_permission.pretty_inspect, self.class, __method__)
 
 end
 
