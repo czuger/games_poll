@@ -33,7 +33,7 @@ ActiveRecord::Base.logger = Logger.new 'log/db.log'
 # `command` method. We have to set a `prefix` here, which will be the character that triggers command execution.
 bot = Discordrb::Commands::CommandBot.new(
   token: data_hash['token'], prefix: Commands::Common::BOT_PREFIX, advanced_functionality: true,
-  fancy_log: false, log_mode: :debug)
+  fancy_log: false, log_mode: :info)
 
 # bot.logger = Discordrb::Logger.new(fancy: true, streams: [Logger.new('log/discordrb.log')])
 # Discordrb::LOGGER.streams = [Logger.new('log/discordrb.log')]
@@ -103,7 +103,7 @@ bot.ready do |event|
   GpLogs.info('Bot started', 'Object', __method__)
   # GpLogs.info(bot.pretty_inspect)
 
-  show_permissions(bot)
+  # show_permissions(bot)
 
   refresh_polls_loop(bot)
 end
