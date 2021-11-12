@@ -20,7 +20,7 @@ require_relative 'reactions'
 require_relative 'libs/gp_logs'
 require_relative 'commands/polls/restart'
 
-logger = Logger.new(STDOUT)
+logger = Logger.new(STDERR)
 logger.level = Logger::DEBUG
 logger.formatter = Ruby::JSONFormatter::Base.new
 
