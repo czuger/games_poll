@@ -35,7 +35,8 @@ class GpLogs
   def self.get_logger
     unless @@logger
       @@logger = Logger.new('log/general.log')
-      @@logger.formatter = Ruby::JSONFormatter::Base.new
+      @@logger.formatter = Ruby::JSONFormatter::Base.new 'games_poll', {'source': 'general'}
+
     end
 
     @@logger
