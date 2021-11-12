@@ -20,6 +20,10 @@ require_relative 'reactions'
 require_relative 'libs/gp_logs'
 require_relative 'commands/polls/restart'
 
+logger = Logger.new(STDOUT)
+logger.level = Logger::DEBUG
+logger.formatter = Ruby::JSONFormatter::Base.new
+
 file = File.read('./config/bot.json')
 data_hash = JSON.parse(file)
 
