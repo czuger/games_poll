@@ -72,6 +72,7 @@ GEM
     listen (3.5.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
+    log_formatter (0.8.2)
     loofah (2.10.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -150,6 +151,7 @@ DEPENDENCIES
   colorize
   discordrb (= 3.4.2)!
   ed25519 (~> 1.2)
+  log_formatter
   rake
   rerun
   sqlite3

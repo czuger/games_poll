@@ -8,6 +8,8 @@ require 'pp'
 require 'uri'
 require 'active_record'
 require 'yaml'
+require 'log_formatter'
+require 'log_formatter/ruby_json_formatter'
 require_relative 'models/server'
 require_relative 'models/channel'
 require_relative 'models/poll'
@@ -28,6 +30,7 @@ ActiveRecord::Base.establish_connection(db_config[db_env])
 # Required to activate foreign keys on SQLite
 ActiveRecord::Base.connection.execute('PRAGMA foreign_keys = ON;')
 ActiveRecord::Base.logger = Logger.new 'log/db.log'
+# logger.formatter = Ruby::JSONFormatter::Base.new
 
 # Here we instantiate a `CommandBot` instead of a regular `Bot`, which has the functionality to add commands using the
 # `command` method. We have to set a `prefix` here, which will be the character that triggers command execution.
