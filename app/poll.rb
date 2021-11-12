@@ -34,7 +34,7 @@ ActiveRecord::Base.establish_connection(db_config[db_env])
 # Required to activate foreign keys on SQLite
 ActiveRecord::Base.connection.execute('PRAGMA foreign_keys = ON;')
 ActiveRecord::Base.logger = Logger.new 'log/db.log'
-ActiveRecord::Base.logger.formatter = Ruby::JSONFormatter::Base.new 'games_poll', {'source': 'db'}
+ActiveRecord::Base.logger.formatter = Ruby::JSONFormatter::Base.new 'games_poll', {'log_origin': 'db'}
 
 ActiveSupport::LogSubscriber.colorize_logging = false
 
