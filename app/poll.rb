@@ -112,7 +112,7 @@ bot.ready do |event|
   GpLogs.info('Bot started', 'Object', __method__)
   # GpLogs.info(bot.pretty_inspect)
 
-  # show_permissions(bot)
+  show_permissions(bot)
 
   refresh_polls_loop(bot)
 end
