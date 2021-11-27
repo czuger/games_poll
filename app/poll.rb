@@ -98,11 +98,12 @@ def show_permissions(bot)
 
   flags = Discordrb::Permissions::FLAGS.map{ |e| e[1] }.sort
 
-  flags.each do |flag|
+  File.open('permissions.txt', 'w') do |f|
+    flags.each do |flag|
 
-    GpLogs.debug("#{flag.to_s.ljust(20, ' ')} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}",
-                 'Object', __method__)
+      f.puts("#{flag.to_s.ljust(20, ' ')} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}")
 
+    end
   end
 end
 
