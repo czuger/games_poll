@@ -68,7 +68,7 @@ def refresh_polls_loop(bot)
       Poll.where(schedule_day: schedule_day).where('updated_at < ?', scheduled_update_exclusion_duration).each do |poll|
 
         GpLogs.debug "poll #{poll.id} will be printed due to schedule the #{Time.now}", 'Object', __method__
-        GpLogs.debug "Bot token = #{bot.token}", 'Object', __method__
+        # GpLogs.debug "Bot token = #{bot.token}", 'Object', __method__
 
         GpLogs.debug "poll.channel = #{poll.channel}", 'Object', __method__
         GpLogs.debug "poll.channel.discord_id = #{poll.channel.discord_id}", 'Object', __method__
@@ -101,7 +101,11 @@ def show_permissions(bot)
   File.open('permissions.txt', 'w') do |f|
     flags.each do |flag|
 
-      f.puts("#{flag.to_s.ljust(20, ' ')} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}")
+      # f.puts("#{flag.to_s.ljust(20, ' ')} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}")
+
+      permissions = [flag, bot_profile.defined_permission?(flag), bot_profile.permission?(flag)].join(',')
+      f.puts(permissions)
+      # f.puts("#{flag.to_s.ljust(20, ' ')} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}")
 
     end
   end
