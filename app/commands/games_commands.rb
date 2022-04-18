@@ -16,7 +16,8 @@ module Commands
         [ 'gf', 'Set a game favorite status (Admin only)' ],
         [ 'gl', 'List all games' ],
         [ 'gi', 'Set default games for server (Admin only)' ],
-        [ 'gh', 'Show this message' ]
+        [ 'gh', 'Show this message' ],
+        [ 'init', 'Initialize the bot' ]
     ]
 
     def self.init_bot(bot)

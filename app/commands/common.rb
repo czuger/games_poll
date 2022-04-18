@@ -10,6 +10,8 @@ module Commands
     # Initialize the bot. First user to run the command is admin.
     def self.init(event, commands)
 
+      puts(Voter.all.count)
+
       if Voter.all.count == 0
         member = reaction_event.server.member(user_id)
         voter_name = member.nick
