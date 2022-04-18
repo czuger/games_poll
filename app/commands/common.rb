@@ -23,6 +23,8 @@ module Commands
         voter.save!
 
         event.channel.send_temporary_message('You are now admin', 30)
+      else
+        event.channel.send_temporary_message('Bot already initialized', 30)
       end
 
     end
