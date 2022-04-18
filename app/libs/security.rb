@@ -7,8 +7,8 @@ class Security
 
     if File.exists?('config/bot.json')
       file = File.open('config/bot.json')
-      admin = JSON.parse file.read
-      admin_id = admin['admin_id']
+      config = JSON.parse file.read
+      admins = config['admin_ids']
     end
 
     # p event.user.id
@@ -16,13 +16,13 @@ class Security
                  self.name, __method__
 
     # p admin_id
-    GpLogs.debug "admin_id = '#{admin_id}'",
+    GpLogs.debug "admins = #{admins}",
                  self.name, __method__
 
-    GpLogs.debug "event.user.id == admin_id : #{event.user.id == admin_id.to_i}",
+    GpLogs.debug "event.user.id in admin_ids : #{admins.include?(event.user.id.to_s)}",
                  self.name, __method__
 
-    event.user.id == admin_id.to_i
+    admins.include?(event.user.id.to_s)
   end
 
   def self.forbidden_message

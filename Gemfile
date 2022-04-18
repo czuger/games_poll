@@ -19,6 +19,7 @@ gem 'activerecord'
 gem 'rerun'
 
 gem 'colorize'
+gem 'log_formatter'
 
 group :development do
   gem 'capistrano', '~> 3.10', require: false
