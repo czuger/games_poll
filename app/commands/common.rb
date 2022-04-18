@@ -8,7 +8,7 @@ module Commands
     end
 
     # Initialize the bot. First user to run the command is admin.
-    def self.init(event, commands)
+    def self.init(event)
 
       puts(Voter.all.count)
 
