@@ -9,7 +9,7 @@ set :repo_url, 'git@github.com:czuger/games_poll.git'
 set :branch, :main
 
 # Default deploy_to directory is /var/www/my_app_name
-set :deploy_to, '/home/webapp/ruby/games_poll'
+# set :deploy_to, '/home/webapp/ruby/games_poll'
 
 # set :rbenv_custom_path, '/usr/local/rbenv'
 set :rbenv_ruby, File.read('.ruby-version').strip

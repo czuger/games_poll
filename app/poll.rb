@@ -32,7 +32,7 @@ ActiveRecord::Base.logger = Logger.new 'log/db.log'
 # Here we instantiate a `CommandBot` instead of a regular `Bot`, which has the functionality to add commands using the
 # `command` method. We have to set a `prefix` here, which will be the character that triggers command execution.
 bot = Discordrb::Commands::CommandBot.new(
-  token: data_hash['token'], prefix: Commands::Common::BOT_PREFIX, advanced_functionality: true,
+  token: data_hash['token'], prefix: Commands::Common::BOT_PREFIX, advanced_functionality: false,
   fancy_log: false, log_mode: :debug)
 
 # bot.logger = Discordrb::Logger.new(fancy: true, streams: [Logger.new('log/discordrb.log')])

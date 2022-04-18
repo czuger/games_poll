@@ -9,3 +9,7 @@ test:
 production:
   adapter: sqlite3
   database: db/production.sqlite3
+
+staging:
+  adapter: sqlite3
+  database: db/production.sqlite3

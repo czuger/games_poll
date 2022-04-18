@@ -7,7 +7,9 @@
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
 
-
+server 'pw', roles: %w{app web db}
+set :keep_releases, 1
+set :deploy_to, '/home/webapp/ruby/games_poll_staging'
 
 # role-based syntax
 # ==================
