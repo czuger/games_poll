@@ -13,7 +13,7 @@ module Commands
       puts(Voter.all.count)
 
       if Voter.all.count == 0
-        member = event.server.member(user_id)
+        member = event.server.member(event.user.id)
         voter_name = member.nick
         voter_name ||= event.user.name
 
