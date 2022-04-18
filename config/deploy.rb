@@ -50,6 +50,7 @@ task :restart_bot do
   on roles :all do
 
     execute 'supervisorctl restart games_poll'
+    execute 'supervisorctl restart games_poll_staging'
   end
 end
 
