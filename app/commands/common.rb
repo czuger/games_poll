@@ -13,9 +13,9 @@ module Commands
       puts(Voter.all.count)
 
       if Voter.all.count == 0
-        member = reaction_event.server.member(user_id)
+        member = event.server.member(user_id)
         voter_name = member.nick
-        voter_name ||= reaction_event.user.name
+        voter_name ||= event.user.name
 
         voter = Voter.where(discord_id: event.user.id).first_or_initialize
         voter.name = voter_name
