@@ -8,8 +8,6 @@ require 'pp'
 require 'uri'
 require 'active_record'
 require 'yaml'
-require 'log_formatter'
-require 'log_formatter/ruby_json_formatter'
 require_relative 'models/server'
 require_relative 'models/channel'
 require_relative 'models/poll'
@@ -19,10 +17,6 @@ require_relative 'commands/poll_commands'
 require_relative 'reactions'
 require_relative 'libs/gp_logs'
 require_relative 'commands/polls/restart'
-
-logger = Logger.new(STDERR)
-logger.level = Logger::DEBUG
-logger.formatter = Ruby::JSONFormatter::Base.new
 
 file = File.read('./config/bot.json')
 data_hash = JSON.parse(file)
@@ -34,15 +28,12 @@ ActiveRecord::Base.establish_connection(db_config[db_env])
 # Required to activate foreign keys on SQLite
 ActiveRecord::Base.connection.execute('PRAGMA foreign_keys = ON;')
 ActiveRecord::Base.logger = Logger.new 'log/db.log'
-ActiveRecord::Base.logger.formatter = Ruby::JSONFormatter::Base.new 'games_poll', {'logger.name': 'db'}
-
-ActiveSupport::LogSubscriber.colorize_logging = false
 
 # Here we instantiate a `CommandBot` instead of a regular `Bot`, which has the functionality to add commands using the
 # `command` method. We have to set a `prefix` here, which will be the character that triggers command execution.
 bot = Discordrb::Commands::CommandBot.new(
   token: data_hash['token'], prefix: Commands::Common::BOT_PREFIX, advanced_functionality: true,
-  fancy_log: false, log_mode: :info)
+  fancy_log: false, log_mode: :debug)
 
 # bot.logger = Discordrb::Logger.new(fancy: true, streams: [Logger.new('log/discordrb.log')])
 # Discordrb::LOGGER.streams = [Logger.new('log/discordrb.log')]
@@ -68,15 +59,19 @@ def refresh_polls_loop(bot)
       Poll.where(schedule_day: schedule_day).where('updated_at < ?', scheduled_update_exclusion_duration).each do |poll|
 
         GpLogs.debug "poll #{poll.id} will be printed due to schedule the #{Time.now}", 'Object', __method__
-        # GpLogs.debug "Bot token = #{bot.token}", 'Object', __method__
+        GpLogs.debug "Bot token = #{bot.token}", 'Object', __method__
 
-        GpLogs.debug "poll.channel = #{poll.channel}", 'Object', __method__
-        GpLogs.debug "poll.channel.discord_id = #{poll.channel.discord_id}", 'Object', __method__
+        if poll.channel
+          GpLogs.debug "poll.channel = #{poll.channel}", 'Object', __method__
+          GpLogs.debug "poll.channel.discord_id = #{poll.channel.discord_id}", 'Object', __method__
 
-        channel = bot.channel(poll.channel.discord_id)
-        GpLogs.debug "Channel name = #{channel.name}"
+          channel = bot.channel(poll.channel.discord_id)
+          GpLogs.debug "Channel name = #{channel.name}"
 
-        Commands::Polls::Restart.pr(poll, channel)
+          Commands::Polls::Restart.pr(poll, channel)
+        else
+          GpLogs.error "Trying to restart a poll never started (#{poll.name})"
+        end
       end
 
       sleep 3600
@@ -98,16 +93,11 @@ def show_permissions(bot)
 
   flags = Discordrb::Permissions::FLAGS.map{ |e| e[1] }.sort
 
-  File.open('permissions.txt', 'w') do |f|
-    flags.each do |flag|
+  flags.each do |flag|
 
-      # f.puts("#{flag.to_s.ljust(20, ' ')} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}")
+    GpLogs.debug("#{flag.to_s.ljust(20, ' ')} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}",
+                 'Object', __method__)
 
-      permissions = [flag, bot_profile.defined_permission?(flag), bot_profile.permission?(flag)].join(',')
-      f.puts(permissions)
-      # f.puts("#{flag.to_s.ljust(20, ' ')} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}")
-
-    end
   end
 end
 

@@ -19,7 +19,7 @@ class GpLogs
   end
 
   def self.error(msg, calling_class=nil, calling_method=nil)
-    get_logger.info(make_msg(msg, calling_class, calling_method))
+    get_logger.error(make_msg(msg, calling_class, calling_method))
   end
 
   def self.fatal(msg, calling_class=nil, calling_method=nil)
@@ -35,7 +35,7 @@ class GpLogs
   def self.get_logger
     unless @@logger
       @@logger = Logger.new('log/general.log')
-      @@logger.formatter = Ruby::JSONFormatter::Base.new 'games_poll', {'logger.name': 'general'}
+      # @@logger.formatter = Ruby::JSONFormatter::Base.new 'games_poll', {'logger.name': 'general'}
 
     end
 
