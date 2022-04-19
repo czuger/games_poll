@@ -48,10 +48,26 @@ set :keep_releases, 10
 
 task :restart_bot do
   on roles :all do
+    supervisor_command_name = fetch(:supervisor_command_name)
 
-    execute 'supervisorctl restart games_poll'
-    execute 'supervisorctl restart games_poll_staging'
+    execute "supervisorctl restart #{supervisor_command_name}"
   end
 end
 
 after 'deploy:finished', :restart_bot
+
+task :stop_bot do
+  on roles :all do
+    supervisor_command_name = fetch(:supervisor_command_name)
+
+    execute "supervisorctl stop #{supervisor_command_name}"
+  end
+end
+
+task :start_bot do
+  on roles :all do
+    supervisor_command_name = fetch(:supervisor_command_name)
+
+    execute "supervisorctl start #{supervisor_command_name}"
+  end
+end

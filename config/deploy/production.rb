@@ -11,6 +11,8 @@ server 'pw', roles: %w{app web db}
 set :keep_releases, 3
 set :deploy_to, '/home/webapp/ruby/games_poll'
 
+set :supervisor_command_name, 'games_poll'
+
 # role-based syntax
 # ==================
 
