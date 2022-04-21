@@ -79,7 +79,7 @@ def refresh_polls_loop(bot)
   end
 end
 
-def show_permissions(bot)
+def save_permissions(bot)
 
   GpLogs.debug("Bot's servers", 'Object', __method__)
 
@@ -91,14 +91,20 @@ def show_permissions(bot)
 
   bot_profile = bot.profile.on(bot.servers[first_server_id])
 
+  permission_dict = {}
   flags = Discordrb::Permissions::FLAGS.map{ |e| e[1] }.sort
 
   flags.each do |flag|
+    # GpLogs.debug("#{flag.to_s.ljust(20, ' ')} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}",
+    #              'Object', __method__)
 
-    GpLogs.debug("#{flag.to_s.ljust(20, ' ')} \t#{bot_profile.defined_permission?(flag)} \t#{bot_profile.permission?(flag)}",
-                 'Object', __method__)
-
+    permission_dict[flag.to_s] = {
+      defined_permission: bot_profile.defined_permission?(flag),
+      permission: bot_profile.permission?(flag)
+    }
   end
+
+  File.write('/tmp/permissions.json', JSON.dump(permission_dict))
 end
 
 # pp bot
@@ -107,7 +113,7 @@ bot.ready do |event|
   GpLogs.info('Bot started', 'Object', __method__)
   # GpLogs.info(bot.pretty_inspect)
 
-  show_permissions(bot)
+  save_permissions(bot)
 
   refresh_polls_loop(bot)
 end
