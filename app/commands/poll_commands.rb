@@ -7,6 +7,7 @@ require_relative 'polls/add'
 require_relative 'common'
 require_relative 'polls/add'
 require_relative 'polls/restart'
+require_relative 'polls/delete'
 require_relative '../libs/gp_logs'
 require_relative '../libs/security'
 require 'pp'
@@ -20,6 +21,7 @@ module Commands
         [ 'pl', 'List polls' ],
         [ 'pc', 'Clean polls (Admin only)' ],
         [ 'pr', 'Restart a poll (Admin only)' ],
+        [ 'pdel', 'Remove a poll (Admin only)' ],
         [ 'ph', 'Show this message' ]
     ]
 
@@ -33,6 +35,7 @@ module Commands
       GpLogs.info('PollCommands initialized', self.name, __method__)
     end
 
+    # Find a poll by it's name or id. Then exec (yield) the code.
     def self.find_and_exec(event)
       content = event.message.content.split
       content.shift
@@ -79,7 +82,6 @@ module Commands
         end
       end
     end
-
 
     # TODO : After adding a new game, need to show the poll again
     # Also need to set votes for voters.
@@ -136,6 +138,14 @@ module Commands
       return Security.forbidden_message unless Security.is_admin? event
       self.find_and_exec(event) do |poll, _|
         Polls::Restart.pr(poll, event.channel)
+      end
+    end
+
+    def self.pdel(event)
+      return Security.forbidden_message unless Security.is_admin? event
+
+      self.find_and_exec(event) do |poll, _|
+        Polls::Delete.pdel(poll, event.channel)
       end
     end
 

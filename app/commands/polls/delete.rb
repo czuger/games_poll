@@ -4,10 +4,10 @@ require_relative '../../models/vote_history'
 
 module Commands
   module Polls
-    class Restart
+    class Delete
 
       # Restart a poll
-      def self.pr(poll, discord_channel)
+      def self.pdel(poll, discord_channel)
 
         ActiveRecord::Base.transaction do
           poll.votes.where(choice_type: 'Game').each do |v|
@@ -17,11 +17,11 @@ module Commands
           end
 
           poll.votes.destroy_all
+          poll.destroy
+
         end
 
-        poll.show(discord_channel)
-
-        nil
+        "Poll #{poll.name} deleted successfully."
       end
     end
   end

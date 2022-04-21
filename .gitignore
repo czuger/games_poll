@@ -1,4 +1,7 @@
-log/*.log
+permissions.txt
+test.html
+
+*.log
 
 .idea
 bot.json
