@@ -1,0 +1,112 @@
+---
+:games:
+- :name: ADG
+  :favored: false
+- :name: SAGA ADM
+  :favored: false
+- :name: SAGA histo
+  :favored: false
+- :name: Bolt
+  :favored: false
+- :name: Frostgrave
+  :favored: false
+- :name: Malifaux
+  :favored: false
+- :name: 40k
+  :favored: false
+- :name: Bataille Empire
+  :favored: false
+- :name: Blood red sky
+  :favored: false
+- :name: Briskars
+  :favored: false
+- :name: Congo
+  :favored: false
+- :name: Dead man
+  :favored: false
+- :name: Dracula America
+  :favored: false
+- :name: Epic
+  :favored: false
+- :name: Game of throne
+  :favored: false
+- :name: Gang of Rome
+  :favored: false
+- :name: Guildball
+  :favored: false
+- :name: Khârn ages
+  :favored: false
+- :name: SdA
+  :favored: false
+- :name: SW Armada
+  :favored: false
+- :name: SW Legion
+  :favored: false
+- :name: Tercio
+  :favored: false
+- :name: Walking dead
+  :favored: false
+- :name: X-Wing
+  :favored: false
+- :name: Savage core
+  :favored: false
+- :name: Blitzkrieg
+  :favored: false
+- :name: Core space
+  :favored: false
+- :name: Mousquet et tomahawk
+  :favored: false
+- :name: POW
+  :favored: false
+- :name: Au contact
+  :favored: false
+- :name: Warlords of Erehwon
+  :favored: false
+- :name: La Guerre de l'Anneau
+  :favored: false
+- :name: Twilight Imperium
+  :favored: false
+- :name: Star Wars Rebellion
+  :favored: false
+- :name: Jugula
+  :favored: false
+- :name: Ave Tenebrae
+  :favored: false
+- :name: TravelBatle
+  :favored: false
+- :name: Cruel Seas
+  :favored: false
+- :name: Battle Cry
+  :favored: false
+- :name: Dune
+  :favored: false
+- :name: Shakos & Baïonnettes
+  :favored: false
+- :name: ADG
+  :favored: true
+- :name: Bolt
+  :favored: true
+- :name: Malifaux
+  :favored: true
+- :name: SAGA histo
+  :favored: true
+- :name: POW
+  :favored: true
+:server_choice:
+- :name: Present avec les clefs
+  :button_style: :success
+  :emoji: "\\u{1F511}"
+  :first_row: true
+- :name: Absent
+  :button_style: :danger
+  :emoji: "\\u{1F4A4}"
+  :first_row: true
+- :name: Ajouter un jeu
+  :button_style: :secondary
+  :emoji: "\\u{2795}"
+  :run_command: :add_game
+  :first_row: true
+- :name: Autres
+  :button_style: :secondary
+  :emoji: "\\u{265F}"
+  :first_row: false

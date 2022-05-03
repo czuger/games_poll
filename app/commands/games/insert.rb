@@ -18,7 +18,7 @@ module Commands
           File.open('data/favored.txt').readlines.each do |title|
             self.gi_insert(s, title, true)
           end
-          File.open('data/regular.txt').readlines.each do |title|
+          File.open('data/all.txt').readlines.each do |title|
             self.gi_insert(s, title, false)
           end
 

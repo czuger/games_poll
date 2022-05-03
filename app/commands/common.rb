@@ -7,26 +7,5 @@ module Commands
       event.channel.send_temporary_message(message, 30)
     end
 
-    # Initialize the bot. First user to run the command is admin.
-    def self.init(event)
-
-      puts(Voter.all.count)
-
-      if Voter.all.count == 0
-        member = event.server.member(event.user.id)
-        voter_name = member.nick
-        voter_name ||= event.user.name
-
-        voter = Voter.where(discord_id: event.user.id).first_or_initialize
-        voter.name = voter_name
-        voter.admin = true
-        voter.save!
-
-        event.channel.send_temporary_message('You are now admin', 30)
-      else
-        event.channel.send_temporary_message('Bot already initialized', 30)
-      end
-
-    end
   end
 end

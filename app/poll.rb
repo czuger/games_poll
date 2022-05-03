@@ -14,6 +14,7 @@ require_relative 'models/poll'
 require_relative 'commands/common'
 require_relative 'commands/games_commands'
 require_relative 'commands/poll_commands'
+require_relative 'commands/server_commands'
 require_relative 'reactions'
 require_relative 'libs/gp_logs'
 require_relative 'commands/polls/restart'
@@ -41,10 +42,12 @@ bot = Discordrb::Commands::CommandBot.new(
 # Use views
 # https://support.discord.com/hc/en-us/articles/360055709773-View-as-Role-FAQ
 
-Reactions.start bot
+# Reactions.start bot
+Reactions.start_reaction_to_buttons bot
 
 Commands::GamesCommands.init_bot bot
 Commands::PollCommands.init_bot bot
+Commands::ServerCommands.init_bot bot
 
 def refresh_polls_loop(bot)
   Thread.new do
@@ -57,6 +60,7 @@ def refresh_polls_loop(bot)
       GpLogs.debug "Polling day : #{schedule_day}, time : #{scheduled_update_exclusion_duration}", 'Object', __method__
 
       Poll.where(schedule_day: schedule_day).where('updated_at < ?', scheduled_update_exclusion_duration).each do |poll|
+      # Poll.where(schedule_day: schedule_day).each do |poll|
 
         GpLogs.debug "poll #{poll.id} will be printed due to schedule the #{Time.now}", 'Object', __method__
         GpLogs.debug "Bot token = #{bot.token}", 'Object', __method__

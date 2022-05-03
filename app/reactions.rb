@@ -5,6 +5,7 @@ require_relative 'models/vote'
 require_relative 'models/add_other_game'
 require_relative 'libs/gp_logs'
 
+
 class Reactions
 
   def self.start(bot)
@@ -43,6 +44,23 @@ class Reactions
 
         false
       end
+    end
+  end
+
+  def self.start_reaction_to_buttons(bot)
+    bot.interaction_create do |event|
+      event.interaction.defer
+
+      p '*'*100
+      p event.interaction.data['custom_id']
+      p '*'*100
+
+      # sleep 10
+
+      event.interaction.send_message(
+        content:   "Hello World !, #{event.interaction.data['custom_id']}",
+        ephemeral: true
+      )
     end
   end
 

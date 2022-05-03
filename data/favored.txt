@@ -1,6 +1,5 @@
 ADG
-SAGA ADM
-SAGA histo
 Bolt
-Frostgrave
 Malifaux
+SAGA histo
+POW
