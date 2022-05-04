@@ -5,6 +5,7 @@ require_relative 'channel'
 require_relative '../libs/embed'
 require_relative '../libs/gp_logs'
 require 'securerandom'
+require 'active_support'
 
 
 # A poll object
@@ -19,85 +20,65 @@ class Poll < ActiveRecord::Base
   has_many :add_other_games
 
   has_many :poll_choices
-  has_many :games, -> {where('poll_choices.choice_type' => 'Game')}, through: :polls_choices
+  has_many :games, -> {where('poll_choices.choice_type' => 'Game').order('games.name')}, through: :polls_choices
+
+  has_many :first_rows, -> {
+    where('poll_choices.choice_type' => 'ServerChoice',
+          'poll_choices.first_row' => true).order('poll_choices.id') },
+           class_name: 'PollChoice'
+
+  has_many :games_choices, -> {
+    where('poll_choices.choice_type' => 'Game').order('poll_choices.name') },
+           class_name: 'PollChoice'
+
+  has_many :others, -> {
+    where('poll_choices.choice_type' => 'ServerChoice',
+          'poll_choices.first_row' => false).order('poll_choices.id') },
+           class_name: 'PollChoice'
+
+  #
+  # has_many :others, -> {
+  #   where('poll_choices.choice_type' => 'ServerChoice',
+  #         'server_choices.first_row' => False).order('server_choices.id') },
+  #          class_name: ServerChoice, through: :polls_choices
+
 
   extend Models::Common
 
   def show(discord_channel)
 
-    buts = []
-    # buts << Discordrb::Components::Button.new({label: :foo}, discord_channel.server.bot)
-    # buts << Discordrb::Components::Button.new({'label' => :foo, 'style' => :primary}, nil)
-
-    buttons_packs = []
-    buttons_pack = []
-
-    p self.poll_choices.includes(:choice).order(:emoji).to_a
-
-    self.poll_choices.includes(:choice).order(:emoji).each do |pic|
-      msg = "#{pic.choice.name}"
-      key = pic.id
-
-      if pic.choice.class.name == 'ServerChoice'
-        next
-      end
-
-      buttons_pack << [msg, key, nil, :primary]
-
-      if buttons_pack.length >= 5
-        buttons_packs << buttons_pack
-        buttons_pack = []
-      end
-    end
-
-    buttons_pack << ['Autres', :foo, "\u{265F}", :secondary]
-    buttons_packs << buttons_pack
+    emoji = '\u00a9'
 
     new_message = discord_channel.send_message(
       '', false, nil, nil, nil, nil,
       Discordrb::Components::View.new { |builder|
 
-        add_game = "\u{2795}"
-        keys = "\u{1F511}"
-        away = "\u{1F4A4}"
-        other = "\u{265F}"
-
         builder.row { |r|
+          self.first_rows.each do |fr|
             r.button(
-              style:     :success,
-              label:     'Présent avec les clefs',
-              custom_id: 'palc',
-              emoji: keys,
+              style:     fr.button_style.to_sym,
+              label:     fr.name,
+              custom_id: fr.id,
+              emoji: fr.emoji,
               disabled:  false
             )
-            r.button(
-              style:     :danger,
-              label:     'Absent',
-              custom_id: 'abs',
-              emoji: away,
-              disabled:  false
-            )
-            r.button(
-              style:     :secondary,
-              label:     'Ajouter un jeu',
-              custom_id: 'add',
-              emoji: add_game,
-              disabled:  false
-            )
-          }
+          end
+        }
 
-          buttons_packs.each do |b|
-            builder.row { |r|
-              b.each do |m|
-                r.button(
-                  style:     m[3],
-                  label:     m[0],
-                  custom_id: m[1],
-                  emoji: m[2],
-                  disabled:  false
-                )
-              end
-            }
+        games = self.games_choices + self.others
+
+        games.in_groups_of(5, false).each do |_row|
+          builder.row { |r|
+            _row.each do |g|
+              r.button(
+                style:     :primary,
+                label:     g.name,
+                custom_id: g.id,
+                emoji: g.emoji,
+                disabled:  false
+              )
+            end
+          }
         end
       }.to_a
     )
@@ -129,34 +110,33 @@ class Poll < ActiveRecord::Base
   def add_games(games)
     server = self.server
 
-    emoji = 0
-    server.server_choices.where(before: true).order(:name).each do |orga|
-      emoji = set_models_choice(self, emoji, orga)
+    server.server_choices.order(:id).each do |sc|
+      set_models_choice(self, sc)
     end
 
     games_ids = poll_choices.where(choice_type: 'Game').pluck(:choice_id)
     games_ids += games.map{ |e| e.id }
 
-    server.games.where(id: games_ids).order(:name).each do |g|
-      emoji = set_models_choice(self, emoji, g)
-    end
-
-    server.server_choices.where(before: false).order(:name).each do |orga|
-      emoji = set_models_choice(self, emoji, orga)
+    server.games.where(id: games_ids).order(:id).each do |g|
+      set_models_choice(self, g)
     end
   end
 
   private
 
-  def set_models_choice(pi, emoji, choice)
-    pig = PollChoice.where(poll_id: pi.id, emoji: emoji).first_or_initialize
-    pig.choice = choice
+  def set_models_choice(pi, data)
+    pig = PollChoice.where(poll_id: pi.id, choice_id: data.id, choice_type: data.class.to_s).first_or_initialize
+
+    pig.first_row = data.first_row
+    pig.emoji = data.emoji
+    pig.button_style = data.button_style
+    pig.run_command = data.run_command
+    pig.name = data.name
     pig.save!
-    emoji + 1
   end
 
   def set_choice_key(_klass, id)
-    "#{_klass}_#{id}"
+    "_klass_#{id}"
   end
 
 end

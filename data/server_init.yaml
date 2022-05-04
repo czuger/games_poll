@@ -95,18 +95,18 @@
 :server_choice:
 - :name: Present avec les clefs
   :button_style: :success
-  :emoji: "\\u{1F511}"
+  :emoji: "🔑"
   :first_row: true
 - :name: Absent
   :button_style: :danger
-  :emoji: "\\u{1F4A4}"
+  :emoji: "💤"
   :first_row: true
 - :name: Ajouter un jeu
   :button_style: :secondary
-  :emoji: "\\u{2795}"
+  :emoji: "➕"
   :run_command: :add_game
   :first_row: true
 - :name: Autres
   :button_style: :secondary
-  :emoji: "\\u{265F}"
+  :emoji: "♟"
   :first_row: false

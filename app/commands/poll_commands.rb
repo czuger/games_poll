@@ -129,8 +129,10 @@ module Commands
 
     # Create a new poll
     def self.pa(event)
-      Polls::Add.pa(
-        event.channel.server.id, event.message.content)
+      ActiveRecord::Base.transaction do
+        Polls::Add.pa(
+          event.channel.server.id, event.message.content)
+      end
     end
 
     # Restart a poll

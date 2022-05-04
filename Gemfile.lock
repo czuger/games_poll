@@ -143,6 +143,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  activesupport
   bcrypt_pbkdf (~> 1.0)
   capistrano (~> 3.10)
   capistrano-bundler (~> 2.0)

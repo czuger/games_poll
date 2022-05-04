@@ -14,7 +14,7 @@ gem 'rake'
 gem 'sqlite3'
 
 gem 'activerecord'
-# gem 'activesupport'
+gem 'activesupport'
 
 gem 'rerun'
 
