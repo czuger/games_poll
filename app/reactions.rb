@@ -52,6 +52,8 @@ class Reactions
       event.interaction.defer
 
       p '*'*100
+      p event.user.id
+      p event.server.member(event.user.id)
       p event.interaction.data['custom_id']
       p '*'*100
 

@@ -35,7 +35,6 @@ module Commands
         'Game added'
       end
 
-
       # Game list
       def self.gl(event, discord_server_id)
         s = Server.get_or_create discord_server_id
