@@ -8,6 +8,8 @@ git_source(:github) {|repo_name| 'https://github.com/#{repo_name}' }
 
 gem 'discordrb', '3.4.2', git: 'https://github.com/shardlab/discordrb'
 
+gem 'mongo'
+
 gem 'standalone_migrations'
 
 gem 'rake'
