@@ -1,17 +1,17 @@
 ---
 :games:
 - :name: ADG
-  :favored: false
+  :favored: true
 - :name: SAGA ADM
   :favored: false
 - :name: SAGA histo
-  :favored: false
+  :favored: true
 - :name: Bolt
-  :favored: false
+  :favored: true
 - :name: Frostgrave
   :favored: false
 - :name: Malifaux
-  :favored: false
+  :favored: true
 - :name: 40k
   :favored: false
 - :name: Bataille Empire
@@ -57,7 +57,7 @@
 - :name: Mousquet et tomahawk
   :favored: false
 - :name: POW
-  :favored: false
+  :favored: true
 - :name: Au contact
   :favored: false
 - :name: Warlords of Erehwon
@@ -82,24 +82,14 @@
   :favored: false
 - :name: Shakos & Baïonnettes
   :favored: false
-- :name: ADG
-  :favored: true
-- :name: Bolt
-  :favored: true
-- :name: Malifaux
-  :favored: true
-- :name: SAGA histo
-  :favored: true
-- :name: POW
-  :favored: true
 :server_choice:
 - :name: Present avec les clefs
   :button_style: :success
-  :emoji: "🔑"
+  :emoji: "\U0001F511"
   :first_row: true
 - :name: Absent
   :button_style: :danger
-  :emoji: "💤"
+  :emoji: "\U0001F4A4"
   :first_row: true
 - :name: Ajouter un jeu
   :button_style: :secondary

@@ -10,6 +10,8 @@ require 'yaml'
 module Commands
   class ServerCommands < Common
 
+    CONFIG_FILE = 'config/server_init.yaml'
+
     COMMANDS = [
         [ 'init_server', 'Initialize the bot on a new server.' ]
     ]
@@ -45,8 +47,8 @@ module Commands
           event.channel.send_temporary_message('Bootstrap admin already set', 30)
         end
 
-        if File.exists?('data/server_init.yaml')
-          init_dict = YAML.load_file 'data/server_init.yaml'
+        if File.exists?(CONFIG_FILE)
+          init_dict = YAML.load_file CONFIG_FILE
 
           p 'init dict'
           p init_dict

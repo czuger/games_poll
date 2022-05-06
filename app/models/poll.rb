@@ -19,7 +19,8 @@ class Poll < ActiveRecord::Base
 
   has_many :add_other_games
 
-  has_many :poll_choices
+  has_many :poll_choices, dependent: :delete_all
+
   has_many :games, -> {where('poll_choices.choice_type' => 'Game').order('games.name')}, through: :polls_choices
 
   has_many :first_rows, -> {
@@ -46,8 +47,6 @@ class Poll < ActiveRecord::Base
   extend Models::Common
 
   def show(discord_channel)
-
-    emoji = '\u00a9'
 
     new_message = discord_channel.send_message(
       '', false, nil, nil, nil, nil,
